@@ -1,6 +1,6 @@
-import { Fragment } from "react";
 import type { Metadata } from "next";
 
+import { AboutThisWorkRichText } from "@/components/about-this-work-rich-text";
 import { sanityFetch } from "@/sanity/lib/client";
 import { aboutAuthorPageQuery } from "@/sanity/lib/queries";
 
@@ -27,29 +27,6 @@ const DEFAULT_BOOK_TITLE = "Introspection, Your Inner Superpower Revealed";
 
 const aboutThisWorkBoxClass =
   "mt-8 rounded-lg bg-gradient-to-br from-amber-50/80 to-stone-50/50 px-5 py-4 font-serif text-lg leading-relaxed text-stone-800 shadow-sm";
-
-/** Renders plain text; `{{bookTitle}}` becomes the site book title in amber. */
-function AboutThisWorkRichText({
-  text,
-  resolvedBookTitle,
-}: {
-  text: string;
-  resolvedBookTitle: string;
-}) {
-  const parts = text.split("{{bookTitle}}");
-  return (
-    <p className="whitespace-pre-line">
-      {parts.map((part, index) => (
-        <Fragment key={index}>
-          {index > 0 ? (
-            <span className="font-semibold text-amber-900">{resolvedBookTitle}</span>
-          ) : null}
-          {part}
-        </Fragment>
-      ))}
-    </p>
-  );
-}
 
 const FALLBACK = {
   title: "About Vinay Singh",
