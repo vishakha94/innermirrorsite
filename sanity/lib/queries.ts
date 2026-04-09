@@ -18,6 +18,7 @@ export const aboutAuthorQuery = groq`
   *[_type == "aboutAuthor"] | order(_updatedAt desc)[0]{
     title,
     lead,
+    aboutThisWork,
     sections[]{
       _key,
       heading,
@@ -25,6 +26,21 @@ export const aboutAuthorQuery = groq`
     }
   }
 `;
+
+/** About-author doc plus book title from Site settings (for the auto-generated closing line). */
+export const aboutAuthorPageQuery = groq`{
+  "about": *[_type == "aboutAuthor"] | order(_updatedAt desc)[0]{
+    title,
+    lead,
+    aboutThisWork,
+    sections[]{
+      _key,
+      heading,
+      body
+    }
+  },
+  "bookTitle": *[_type == "siteSettings"] | order(_updatedAt desc)[0].bookTitle
+}`;
 
 export const blogPostsQuery = groq`
   *[_type == "blogPost"] | order(publishedAt desc) {

@@ -22,6 +22,14 @@ export const aboutAuthor = defineType({
       description: "One or two sentences under the title.",
     }),
     defineField({
+      name: "aboutThisWork",
+      title: "What this book & site are about",
+      type: "text",
+      rows: 6,
+      description:
+        "Full narrative from you. Where the book title should appear in amber, type {{bookTitle}} — it is replaced with Book title from Site settings (or a default if empty).",
+    }),
+    defineField({
       name: "sections",
       title: "Sections",
       type: "array",

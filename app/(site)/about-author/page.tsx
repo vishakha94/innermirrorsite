@@ -1,8 +1,8 @@
-import Link from "next/link";
+import { Fragment } from "react";
 import type { Metadata } from "next";
 
 import { sanityFetch } from "@/sanity/lib/client";
-import { aboutAuthorQuery } from "@/sanity/lib/queries";
+import { aboutAuthorPageQuery } from "@/sanity/lib/queries";
 
 type AboutSection = {
   _key: string;
@@ -10,37 +10,90 @@ type AboutSection = {
   body?: string;
 };
 
-type AboutAuthor = {
+type AboutAuthorDoc = {
   title: string;
   lead?: string;
+  aboutThisWork?: string;
   sections?: AboutSection[] | null;
 } | null;
+
+type AboutAuthorPagePayload = {
+  about: AboutAuthorDoc;
+  bookTitle: string | null;
+} | null;
+
+/** Used when Site settings → Book title is empty (substituted for {{bookTitle}}). */
+const DEFAULT_BOOK_TITLE = "Introspection, Your Inner Superpower Revealed";
+
+const aboutThisWorkBoxClass =
+  "mt-8 rounded-lg bg-gradient-to-br from-amber-50/80 to-stone-50/50 px-5 py-4 font-serif text-lg leading-relaxed text-stone-800 shadow-sm";
+
+/** Renders plain text; `{{bookTitle}}` becomes the site book title in amber. */
+function AboutThisWorkRichText({
+  text,
+  resolvedBookTitle,
+}: {
+  text: string;
+  resolvedBookTitle: string;
+}) {
+  const parts = text.split("{{bookTitle}}");
+  return (
+    <p className="whitespace-pre-line">
+      {parts.map((part, index) => (
+        <Fragment key={index}>
+          {index > 0 ? (
+            <span className="font-semibold text-amber-900">{resolvedBookTitle}</span>
+          ) : null}
+          {part}
+        </Fragment>
+      ))}
+    </p>
+  );
+}
 
 const FALLBACK = {
   title: "About Vinay Singh",
   lead: "Vinay Singh is a spiritual seeker, a lifelong experimenter, and a keen observer of human behaviour. A collector of real-life stories, he brings together experience, empathy, and insight in equal measure.",
+  aboutThisWork: `From a young age, I was inclined toward introspection, turning inward whenever things went wrong or patterns repeated. This habit helped me grow and navigate life more consciously.
+
+As my spiritual journey deepened, introspection became more structured, strengthening my self-awareness. However, I later realized it was often reactive—triggered by challenges rather than practiced regularly.
+
+Through my work as a spiritual trainer, I observed many people struggling with recurring behaviors, emotions, and relationship challenges. This revealed the need for a clear framework to guide self-reflection. Conversations with younger individuals especially highlighted the difficulty of managing relationships today.
+
+I also came to see that for spiritual seekers, inner growth is essential—without it, there is a risk of stagnation.
+
+These insights inspired me to write {{bookTitle}} with a simple aim: to make introspection more accessible, structured, and meaningful for everyone.`,
   sections: [
-    { _key: "background", heading: "Background", body: "Where you write from—your path, work, or what shaped your perspective." },
-    { _key: "writing", heading: "Writing", body: "What this book or site is about, themes you explore, and how you hope it helps readers." },
-    { _key: "connect", heading: "Connect", body: "How readers can follow your work (e.g. newsletter, social)—optional." },
+    {
+      _key: "background",
+      heading: "Background",
+      body: "Where you write from—your path, work, or what shaped your perspective.",
+    },
+    {
+      _key: "connect",
+      heading: "Connect",
+      body: "How readers can follow your work (e.g. newsletter, social)—optional.",
+    },
   ],
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await sanityFetch<AboutAuthor>({
-    query: aboutAuthorQuery,
+  const payload = await sanityFetch<AboutAuthorPagePayload>({
+    query: aboutAuthorPageQuery,
     revalidate: 60,
   });
-  const title = data?.title?.trim() || FALLBACK.title;
+  const title = payload?.about?.title?.trim() || FALLBACK.title;
   return { title };
 }
 
 export default async function AboutAuthorPage() {
-  const data = await sanityFetch<AboutAuthor>({
-    query: aboutAuthorQuery,
+  const payload = await sanityFetch<AboutAuthorPagePayload>({
+    query: aboutAuthorPageQuery,
     revalidate: 60,
   });
-  console.log('****About Author Page content:', data);
+
+  const data = payload?.about ?? null;
+  const resolvedBookTitle = payload?.bookTitle?.trim() || DEFAULT_BOOK_TITLE;
 
   const hasDoc = Boolean(data?.title?.trim());
   const title = data?.title?.trim() || FALLBACK.title;
@@ -50,6 +103,13 @@ export default async function AboutAuthorPage() {
       : !hasDoc
         ? FALLBACK.lead
         : data?.lead?.trim() || "";
+
+  const aboutThisWorkBody =
+    hasDoc && data?.aboutThisWork?.trim()
+      ? data.aboutThisWork.trim()
+      : !hasDoc
+        ? FALLBACK.aboutThisWork
+        : data?.aboutThisWork?.trim() || "";
 
   const sections =
     data?.sections && data.sections.length > 0
@@ -63,19 +123,20 @@ export default async function AboutAuthorPage() {
       <h1 className="font-serif text-4xl font-semibold tracking-tight text-stone-900">
         {title}
       </h1>
-      {lead ? <p className="mt-3 text-stone-600">{lead}</p> : null}
+      {lead ? <p className="mt-3 leading-relaxed text-stone-600">{lead}</p> : null}
 
-      <article className="mt-12 space-y-12">
-        {sections.length === 0 && hasDoc ? (
-          <p className="rounded-xl border border-dashed border-stone-300 bg-white/60 p-10 text-center text-stone-600">
-            Add sections in{" "}
-            <Link href="/studio" className="font-medium text-amber-900 underline">
-              About the author
-            </Link>{" "}
-            in the editor.
-          </p>
-        ) : (
-          sections.map((section, index) => {
+      {aboutThisWorkBody ? (
+        <div className={aboutThisWorkBoxClass} role="note">
+          <AboutThisWorkRichText
+            text={aboutThisWorkBody}
+            resolvedBookTitle={resolvedBookTitle}
+          />
+        </div>
+      ) : null}
+
+      {sections.length > 0 ? (
+        <article className="mt-14 space-y-12 border-t border-stone-200/80 pt-14">
+          {sections.map((section, index) => {
             const slug = section.heading
               .toLowerCase()
               .replace(/\s+/g, "-")
@@ -96,9 +157,9 @@ export default async function AboutAuthorPage() {
                 ) : null}
               </section>
             );
-          })
-        )}
-      </article>
+          })}
+        </article>
+      ) : null}
     </main>
   );
 }
