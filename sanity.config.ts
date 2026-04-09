@@ -14,23 +14,24 @@ export default defineConfig({
   dataset,
   schema: { types: schemaTypes },
   plugins: [
-    structureTool((S) =>
-      S.list()
-        .title("Content")
-        .items([
-          S.listItem()
-            .title("Site settings")
-            .id("siteSettings")
-            .child(S.document().schemaType("siteSettings").documentId("siteSettings")),
-          S.listItem()
-            .title("About the author")
-            .id("aboutAuthor")
-            .child(S.document().schemaType("aboutAuthor").documentId("aboutAuthor")),
-          S.divider(),
-          S.documentTypeListItem("blogPost").title("Blog posts"),
-          S.documentTypeListItem("newsItem").title("Book news"),
-        ]),
-    ),
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title("Content")
+          .items([
+            S.listItem()
+              .title("Site settings")
+              .id("siteSettings")
+              .child(S.document().schemaType("siteSettings").documentId("siteSettings")),
+            S.listItem()
+              .title("About the author")
+              .id("aboutAuthor")
+              .child(S.document().schemaType("aboutAuthor").documentId("aboutAuthor")),
+            S.divider(),
+            S.documentTypeListItem("blogPost").title("Blog posts"),
+            S.documentTypeListItem("newsItem").title("Book news"),
+          ]),
+    }),
     visionTool({ defaultApiVersion: apiVersion }),
   ],
 });
