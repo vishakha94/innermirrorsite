@@ -1,0 +1,71 @@
+import { groq } from "next-sanity";
+
+// Newest `siteSettings` doc wins (covers singleton id `siteSettings` or a type-list doc with a UUID _id).
+export const siteSettingsQuery = groq`
+  *[_type == "siteSettings"] | order(_updatedAt desc)[0]{
+    siteTitle,
+    authorName,
+    bookTitle,
+    bookTagline,
+    heroHeadline,
+    heroSubphrase,
+    authorAbout,
+    authorPhoto
+  }
+`;
+
+export const aboutAuthorQuery = groq`
+  *[_type == "aboutAuthor"] | order(_updatedAt desc)[0]{
+    title,
+    lead,
+    sections[]{
+      _key,
+      heading,
+      body
+    }
+  }
+`;
+
+export const blogPostsQuery = groq`
+  *[_type == "blogPost"] | order(publishedAt desc) {
+    _id,
+    title,
+    "slug": slug.current,
+    publishedAt,
+    excerpt,
+    mainImage
+  }
+`;
+
+export const blogPostBySlugQuery = groq`
+  *[_type == "blogPost" && slug.current == $slug][0]{
+    _id,
+    title,
+    "slug": slug.current,
+    publishedAt,
+    excerpt,
+    mainImage,
+    body
+  }
+`;
+
+export const newsItemsQuery = groq`
+  *[_type == "newsItem"] | order(publishedAt desc) {
+    _id,
+    title,
+    "slug": slug.current,
+    publishedAt,
+    excerpt
+  }
+`;
+
+export const newsItemBySlugQuery = groq`
+  *[_type == "newsItem" && slug.current == $slug][0]{
+    _id,
+    title,
+    "slug": slug.current,
+    publishedAt,
+    excerpt,
+    body
+  }
+`;
