@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
 import { sanityFetch } from "@/sanity/lib/client";
 import {
   blogPostsQuery,
@@ -28,23 +29,34 @@ type PostCard = {
   excerpt?: string;
 };
 
+const DEFAULT_BOOK_TITLE = "Introspection, Your Inner Superpower Revealed";
+const DEFAULT_BOOK_TAGLINE =
+  "A guide to mastering introspection through the Inner Mirror.";
+
+/** Split "Introspection, Your Inner Superpower Revealed" into main + subtitle lines. */
+function splitBookTitle(full: string): { main: string; subtitle: string } {
+  const idx = full.indexOf(",");
+  if (idx === -1) {
+    return { main: full.trim(), subtitle: "" };
+  }
+  return {
+    main: full.slice(0, idx).trim(),
+    subtitle: full.slice(idx + 1).trim(),
+  };
+}
+
 export default async function HomePage() {
   const [settings, posts, news] = await Promise.all([
     sanityFetch<SiteSettings>({ query: siteSettingsQuery, revalidate: 60 }),
     sanityFetch<PostCard[]>({ query: blogPostsQuery, revalidate: 60 }),
     sanityFetch<PostCard[]>({ query: newsItemsQuery, revalidate: 60 }),
   ]);
-  console.log('****Home Page content:', settings, posts, news);
 
   const authorName = settings?.authorName ?? "Vinay Singh";
-  const siteTitle = settings?.siteTitle ?? "Inner Mirror";
-  const bookTitle = settings?.bookTitle;
-  const bookTagline = settings?.bookTagline;
-  const heroHeadline = settings?.heroHeadline ?? "Know yourself. Transform your Life.";
-  const heroSubphrase =
-    settings?.heroSubphrase ??
-    "Through introspection and timeless wisdom from the Inner Mirror.";
+  const bookTitle = settings?.bookTitle?.trim() || DEFAULT_BOOK_TITLE;
+  const bookTagline = settings?.bookTagline?.trim() || DEFAULT_BOOK_TAGLINE;
   const authorAbout = settings?.authorAbout?.trim();
+  const { main: titleMain, subtitle: titleSubtitle } = splitBookTitle(bookTitle);
   const aboutPhotoUrl = settings?.authorPhoto
     ? urlForImage(settings.authorPhoto)?.width(640).quality(85).url()
     : null;
@@ -54,44 +66,62 @@ export default async function HomePage() {
 
   return (
     <main>
-      <section className="border-b border-stone-200/80 bg-gradient-to-b from-amber-50/40 to-stone-50 px-4 py-20 sm:px-6 sm:py-28">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-md font-medium tracking-widest text-amber-900/70">
-            {siteTitle}
-          </p>
-          {bookTitle ? (
-            <h1 className="mt-4 font-serif text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
-              {bookTitle}
-            </h1>
-          ) : (
-            <h1 className="mt-4 font-serif text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
-              {heroHeadline}
-            </h1>
-          )}
-          {bookTagline ? (
-            <p className="mt-4 text-lg text-stone-600 sm:text-xl">{bookTagline}</p>
-          ) : null}
-          <p className="mx-auto mt-8 max-w-xl text-pretty leading-relaxed text-stone-700">
-            {heroSubphrase}
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/blog"
-              className="rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold text-stone-50 shadow-sm transition hover:bg-stone-800"
-            >
-              Explore the book
-            </Link>
-            <Link
-              href="/news"
-              className="rounded-full border border-stone-300 bg-white px-6 py-3 text-sm font-semibold text-stone-800 shadow-sm transition hover:border-stone-400"
-            >
-              Start Reflecting
-            </Link>
+      <section className="border-b border-stone-200/60 bg-[#f9f7f2] px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16">
+            <div>
+              <div className="flex justify-center">
+                <HeroInnerMirrorMark />
+              </div>
+              <div className="mx-auto mt-6 max-w-xl text-center">
+                <h1 className="font-serif tracking-tight text-stone-900">
+                  <span className="block text-4xl font-bold leading-none sm:text-5xl lg:text-6xl">
+                    {titleMain}
+                  </span>
+                  {titleSubtitle ? (
+                    <span className="mt-3 block text-2xl font-semibold leading-snug text-stone-800 sm:text-3xl lg:text-[1.75rem]">
+                      {titleSubtitle}
+                    </span>
+                  ) : null}
+                </h1>
+                <p className="mt-6 font-serif text-lg text-stone-700 sm:text-xl">by {authorName}</p>
+              </div>
+              <p className="mx-auto mt-5 max-w-xl text-center text-base leading-relaxed text-stone-600 sm:text-lg">
+                {bookTagline}
+              </p>
+              <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+                <Link
+                  href="/about-author"
+                  className="rounded-full bg-stone-900 px-7 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-800"
+                >
+                  Explore the book
+                </Link>
+                <Link
+                  href="/news"
+                  className="rounded-full border border-stone-300 bg-white px-7 py-3.5 text-sm font-semibold text-stone-800 shadow-sm transition hover:border-stone-400"
+                >
+                  Start Reflecting
+                </Link>
+              </div>
+            </div>
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[440px]">
+                <Image
+                  src="/images/book-cover.png"
+                  alt={`Book cover: ${bookTitle}`}
+                  width={880}
+                  height={1320}
+                  className="h-auto w-full rounded-2xl shadow-2xl ring-1 ring-stone-900/5"
+                  priority
+                  sizes="(max-width: 1024px) 85vw, 440px"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <div className="mx-auto max-w-5xl space-y-20 px-4 py-16 sm:px-6">
+      <div className="mx-auto max-w-6xl space-y-20 px-4 py-16 sm:px-6">
         <section>
           <div className="mb-8 flex items-end justify-between gap-4">
             <h2 className="font-serif text-2xl font-semibold text-stone-900">From the blog</h2>
@@ -100,7 +130,7 @@ export default async function HomePage() {
             </Link>
           </div>
           {latestPosts.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-stone-300 bg-white/60 p-8 text-center text-stone-600">
+            <p className="rounded-xl border border-dashed border-stone-300/90 bg-white/70 p-8 text-center text-stone-600">
               Blog posts will appear here after they are added in{" "}
               <Link href="/studio" className="font-medium text-amber-900 underline">
                 the editor
@@ -113,7 +143,7 @@ export default async function HomePage() {
                 <li key={post._id}>
                   <Link
                     href={`/blog/${post.slug}`}
-                    className="block h-full rounded-xl border border-stone-200/80 bg-white p-6 shadow-sm transition hover:border-amber-800/20 hover:shadow-md"
+                    className="block h-full rounded-xl border border-stone-200/90 bg-white p-6 shadow-sm transition hover:border-amber-800/25 hover:shadow-md"
                   >
                     <time
                       dateTime={post.publishedAt}
@@ -147,7 +177,7 @@ export default async function HomePage() {
               </Link>
             </div>
             {latestNews.length === 0 ? (
-              <p className="rounded-xl border border-dashed border-stone-300 bg-white/60 p-8 text-center text-stone-600">
+              <p className="rounded-xl border border-dashed border-stone-300/90 bg-white/70 p-8 text-center text-stone-600">
                 Share launch dates, events, and milestones in{" "}
                 <Link href="/studio" className="font-medium text-amber-900 underline">
                   Book news
@@ -160,7 +190,7 @@ export default async function HomePage() {
                   <li key={item._id}>
                     <Link
                       href={`/news/${item.slug}`}
-                      className="flex flex-col gap-1 rounded-lg border border-stone-200/80 bg-white px-5 py-4 shadow-sm transition hover:border-amber-800/20 sm:flex-row sm:items-center sm:justify-between"
+                      className="flex flex-col gap-1 rounded-lg border border-stone-200/90 bg-white px-5 py-4 shadow-sm transition hover:border-amber-800/25 sm:flex-row sm:items-center sm:justify-between"
                     >
                       <span className="font-medium text-stone-900">{item.title}</span>
                       <time
@@ -175,6 +205,37 @@ export default async function HomePage() {
               </ul>
             )}
           </div>
+
+          <aside className="lg:col-span-5">
+            <h2 className="font-serif text-2xl font-semibold text-stone-900">About {authorName}</h2>
+            <div className="mt-6 rounded-xl border border-stone-200/90 bg-white p-6 shadow-sm">
+              {aboutPhotoUrl ? (
+                <div className="mb-5 overflow-hidden rounded-lg border border-stone-200/70">
+                  <Image
+                    src={aboutPhotoUrl}
+                    alt={settings?.authorPhoto?.alt ?? ""}
+                    width={640}
+                    height={800}
+                    className="h-auto w-full object-cover"
+                    sizes="(max-width: 1024px) 100vw, 380px"
+                  />
+                </div>
+              ) : null}
+              {authorAbout ? (
+                <p className="text-pretty leading-relaxed text-stone-700 whitespace-pre-line">
+                  {authorAbout}
+                </p>
+              ) : (
+                <p className="text-center text-sm text-stone-600">
+                  Add a short bio and optional photo in{" "}
+                  <Link href="/studio" className="font-medium text-amber-900 underline">
+                    Site settings
+                  </Link>
+                  .
+                </p>
+              )}
+            </div>
+          </aside>
         </section>
       </div>
     </main>

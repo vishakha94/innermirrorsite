@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 
+import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
+
 type NavProps = {
   siteTitle: string;
 };
@@ -58,14 +60,15 @@ export function SiteHeader({ siteTitle }: NavProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-stone-200/80 bg-stone-50/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-40 border-b border-stone-200/70 bg-[#f9f7f2]/95 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:h-16 sm:px-6">
           <Link
             href="/"
-            className="min-w-0 shrink font-serif text-lg font-semibold tracking-tight text-stone-900"
+            className="min-w-0 shrink py-1"
             onClick={close}
+            aria-label={siteTitle}
           >
-            {siteTitle}
+            <HeroInnerMirrorMark compact markOnly />
           </Link>
 
           <nav
@@ -123,12 +126,10 @@ export function SiteHeader({ siteTitle }: NavProps) {
           />
           <div className="absolute inset-x-0 top-0 max-h-[min(100dvh,100vh)] overflow-y-auto bg-white shadow-lg">
             <div className="flex items-center justify-between gap-3 border-b border-stone-200 px-4 py-3">
-              <span
-                id={`${menuId}-label`}
-                className="min-w-0 flex-1 truncate font-serif text-lg font-semibold text-stone-900"
-              >
-                {siteTitle}
-              </span>
+              <div id={`${menuId}-label`} className="min-w-0 flex-1 text-[#a67c52]">
+                <span className="sr-only">{siteTitle}</span>
+                <HeroInnerMirrorMark compact markOnly />
+              </div>
               <button
                 type="button"
                 className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-stone-800"
