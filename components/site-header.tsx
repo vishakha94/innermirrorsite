@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 
 import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
+import { SocialNavLinks, type SocialNavUrls } from "@/components/social-nav-links";
 
 type NavProps = {
   siteTitle: string;
+  social?: SocialNavUrls;
 };
 
 function MenuIcon({ className }: { className?: string }) {
@@ -35,7 +37,7 @@ function CloseIcon({ className }: { className?: string }) {
   );
 }
 
-export function SiteHeader({ siteTitle }: NavProps) {
+export function SiteHeader({ siteTitle, social = {} }: NavProps) {
   const [open, setOpen] = useState(false);
   const menuId = useId();
 
@@ -62,14 +64,17 @@ export function SiteHeader({ siteTitle }: NavProps) {
     <>
       <header className="sticky top-0 z-40 border-b border-stone-200/70 bg-[#f9f7f2]/95 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:h-16 sm:px-6">
-          <Link
-            href="/"
-            className="min-w-0 shrink py-1"
-            onClick={close}
-            aria-label={siteTitle}
-          >
-            <HeroInnerMirrorMark compact markOnly />
-          </Link>
+          <div className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-2.5">
+            <Link
+              href="/"
+              className="flex h-9 min-w-0 shrink-0 items-center sm:h-10"
+              onClick={close}
+              aria-label={siteTitle}
+            >
+              <HeroInnerMirrorMark compact markOnly />
+            </Link>
+            <SocialNavLinks urls={social} variant="desktop" />
+          </div>
 
           <nav
             className="hidden items-center gap-5 text-sm font-medium text-stone-600 md:flex md:gap-6"
@@ -158,6 +163,7 @@ export function SiteHeader({ siteTitle }: NavProps) {
               <Link href="/news" className={linkClass} onClick={close}>
                 Book news
               </Link>
+              <SocialNavLinks urls={social} variant="mobile" onNavigate={close} />
               <Link
                 href="/studio"
                 className={`${linkClass} mt-2 border border-stone-200 bg-stone-50 justify-center`}

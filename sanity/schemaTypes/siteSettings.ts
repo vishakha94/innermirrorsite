@@ -59,6 +59,27 @@ export const siteSettings = defineType({
       options: { hotspot: true },
       fields: [{ name: "alt", type: "string", title: "Alt text" }],
     }),
+    defineField({
+      name: "instagramUrl",
+      title: "Instagram URL",
+      type: "url",
+      description: "Shown in the header (desktop) and mobile menu.",
+    }),
+    defineField({
+      name: "facebookUrl",
+      title: "Facebook URL",
+      type: "url",
+    }),
+    defineField({
+      name: "youtubeUrl",
+      title: "YouTube URL",
+      type: "url",
+    }),
+    defineField({
+      name: "linkedinUrl",
+      title: "LinkedIn URL",
+      type: "url",
+    }),
   ],
   preview: {
     prepare() {

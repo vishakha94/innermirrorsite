@@ -10,7 +10,11 @@ export const siteSettingsQuery = groq`
     heroHeadline,
     heroSubphrase,
     authorAbout,
-    authorPhoto
+    authorPhoto,
+    instagramUrl,
+    facebookUrl,
+    youtubeUrl,
+    linkedinUrl
   }
 `;
 
