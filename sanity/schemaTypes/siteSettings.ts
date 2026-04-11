@@ -80,6 +80,13 @@ export const siteSettings = defineType({
       title: "LinkedIn URL",
       type: "url",
     }),
+    defineField({
+      name: "featuredMediumArticleUrl",
+      title: "Featured Medium article (home)",
+      type: "url",
+      description:
+        "Paste the full Medium article URL for the preview under “From the blog.” If empty, the site uses a default article from the codebase.",
+    }),
   ],
   preview: {
     prepare() {

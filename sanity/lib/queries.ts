@@ -14,7 +14,8 @@ export const siteSettingsQuery = groq`
     instagramUrl,
     facebookUrl,
     youtubeUrl,
-    linkedinUrl
+    linkedinUrl,
+    featuredMediumArticleUrl
   }
 `;
 

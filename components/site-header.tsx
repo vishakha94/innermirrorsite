@@ -5,6 +5,7 @@ import { useEffect, useId, useState } from "react";
 
 import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
 import { SocialNavLinks, type SocialNavUrls } from "@/components/social-nav-links";
+import { MEDIUM_BLOG_PROFILE_URL } from "@/lib/site-externals";
 
 type NavProps = {
   siteTitle: string;
@@ -84,7 +85,7 @@ export function SiteHeader({ siteTitle, social = {} }: NavProps) {
               Author
             </Link>
             <Link
-              href="https://medium.com/@IntrospectionDaily"
+              href={MEDIUM_BLOG_PROFILE_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors hover:text-stone-900"
@@ -152,7 +153,7 @@ export function SiteHeader({ siteTitle, social = {} }: NavProps) {
                 Author
               </Link>
               <Link
-                href="https://medium.com/@IntrospectionDaily"
+                href={MEDIUM_BLOG_PROFILE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={linkClass}

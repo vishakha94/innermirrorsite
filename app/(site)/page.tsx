@@ -1,14 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { MediumPostTeaser } from "@/components/medium-post-teaser";
 import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
+import { fetchMediumFeaturedFromSanity } from "@/lib/medium-post-preview";
+import { MEDIUM_BLOG_PROFILE_URL } from "@/lib/site-externals";
 import { sanityFetch } from "@/sanity/lib/client";
 import {
   blogPostsQuery,
   newsItemsQuery,
   siteSettingsQuery,
 } from "@/sanity/lib/queries";
-import { urlForImage } from "@/sanity/lib/image";
 
 type SiteSettings = {
   siteTitle: string;
@@ -17,8 +19,7 @@ type SiteSettings = {
   bookTagline?: string;
   heroHeadline?: string;
   heroSubphrase?: string;
-  authorAbout?: string;
-  authorPhoto?: { asset?: { _ref: string }; alt?: string };
+  featuredMediumArticleUrl?: string | null;
 } | null;
 
 type PostCard = {
@@ -51,15 +52,14 @@ export default async function HomePage() {
     sanityFetch<PostCard[]>({ query: blogPostsQuery, revalidate: 60 }),
     sanityFetch<PostCard[]>({ query: newsItemsQuery, revalidate: 60 }),
   ]);
+  const mediumFeatured = await fetchMediumFeaturedFromSanity(
+    settings?.featuredMediumArticleUrl,
+  );
 
   const authorName = settings?.authorName ?? "Vinay Singh";
   const bookTitle = settings?.bookTitle?.trim() || DEFAULT_BOOK_TITLE;
   const bookTagline = settings?.bookTagline?.trim() || DEFAULT_BOOK_TAGLINE;
-  const authorAbout = settings?.authorAbout?.trim();
   const { main: titleMain, subtitle: titleSubtitle } = splitBookTitle(bookTitle);
-  const aboutPhotoUrl = settings?.authorPhoto
-    ? urlForImage(settings.authorPhoto)?.width(640).quality(85).url()
-    : null;
 
   const latestPosts = posts?.slice(0, 3) ?? [];
   const latestNews = news?.slice(0, 4) ?? [];
@@ -125,19 +125,16 @@ export default async function HomePage() {
         <section>
           <div className="mb-8 flex items-end justify-between gap-4">
             <h2 className="font-serif text-2xl font-semibold text-stone-900">From the blog</h2>
-            <Link href="/blog" className="text-sm font-medium text-amber-900 hover:underline">
+            <Link
+              href={MEDIUM_BLOG_PROFILE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-amber-900 hover:underline"
+            >
               View all
             </Link>
           </div>
-          {latestPosts.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-stone-300/90 bg-white/70 p-8 text-center text-stone-600">
-              Blog posts will appear here after they are added in{" "}
-              <Link href="/studio" className="font-medium text-amber-900 underline">
-                the editor
-              </Link>
-              .
-            </p>
-          ) : (
+          {latestPosts.length > 0 ? (
             <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {latestPosts.map((post) => (
                 <li key={post._id}>
@@ -165,77 +162,53 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
-          )}
+          ) : null}
+          {mediumFeatured ? (
+            <MediumPostTeaser
+              title={mediumFeatured.title}
+              link={mediumFeatured.link}
+              pubDate={mediumFeatured.pubDate}
+              author={mediumFeatured.author}
+              excerptText={mediumFeatured.excerptText}
+            />
+          ) : null}
         </section>
 
-        <section className="grid gap-12 lg:grid-cols-12 lg:gap-10 lg:items-start">
-          <div className="lg:col-span-7">
-            <div className="mb-8 flex items-end justify-between gap-4">
-              <h2 className="font-serif text-2xl font-semibold text-stone-900">Book news</h2>
-              <Link href="/news" className="text-sm font-medium text-amber-900 hover:underline">
-                View all
-              </Link>
-            </div>
-            {latestNews.length === 0 ? (
-              <p className="rounded-xl border border-dashed border-stone-300/90 bg-white/70 p-8 text-center text-stone-600">
-                Share launch dates, events, and milestones in{" "}
-                <Link href="/studio" className="font-medium text-amber-900 underline">
-                  Book news
-                </Link>{" "}
-                in the editor.
-              </p>
-            ) : (
-              <ul className="space-y-4">
-                {latestNews.map((item) => (
-                  <li key={item._id}>
-                    <Link
-                      href={`/news/${item.slug}`}
-                      className="flex flex-col gap-1 rounded-lg border border-stone-200/90 bg-white px-5 py-4 shadow-sm transition hover:border-amber-800/25 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <span className="font-medium text-stone-900">{item.title}</span>
-                      <time
-                        dateTime={item.publishedAt}
-                        className="text-sm text-stone-500"
-                      >
-                        {new Date(item.publishedAt).toLocaleDateString()}
-                      </time>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
+        <section>
+          <div className="mb-8 flex items-end justify-between gap-4">
+            <h2 className="font-serif text-2xl font-semibold text-stone-900">Book news</h2>
+            <Link href="/news" className="text-sm font-medium text-amber-900 hover:underline">
+              View all
+            </Link>
           </div>
-
-          <aside className="lg:col-span-5">
-            <h2 className="font-serif text-2xl font-semibold text-stone-900">About {authorName}</h2>
-            <div className="mt-6 rounded-xl border border-stone-200/90 bg-white p-6 shadow-sm">
-              {aboutPhotoUrl ? (
-                <div className="mb-5 overflow-hidden rounded-lg border border-stone-200/70">
-                  <Image
-                    src={aboutPhotoUrl}
-                    alt={settings?.authorPhoto?.alt ?? ""}
-                    width={640}
-                    height={800}
-                    className="h-auto w-full object-cover"
-                    sizes="(max-width: 1024px) 100vw, 380px"
-                  />
-                </div>
-              ) : null}
-              {authorAbout ? (
-                <p className="text-pretty leading-relaxed text-stone-700 whitespace-pre-line">
-                  {authorAbout}
-                </p>
-              ) : (
-                <p className="text-center text-sm text-stone-600">
-                  Add a short bio and optional photo in{" "}
-                  <Link href="/studio" className="font-medium text-amber-900 underline">
-                    Site settings
+          {latestNews.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-stone-300/90 bg-white/70 p-8 text-center text-stone-600">
+              Share launch dates, events, and milestones in{" "}
+              <Link href="/studio" className="font-medium text-amber-900 underline">
+                Book news
+              </Link>{" "}
+              in the editor.
+            </p>
+          ) : (
+            <ul className="space-y-4">
+              {latestNews.map((item) => (
+                <li key={item._id}>
+                  <Link
+                    href={`/news/${item.slug}`}
+                    className="flex flex-col gap-1 rounded-lg border border-stone-200/90 bg-white px-5 py-4 shadow-sm transition hover:border-amber-800/25 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <span className="font-medium text-stone-900">{item.title}</span>
+                    <time
+                      dateTime={item.publishedAt}
+                      className="text-sm text-stone-500"
+                    >
+                      {new Date(item.publishedAt).toLocaleDateString()}
+                    </time>
                   </Link>
-                  .
-                </p>
-              )}
-            </div>
-          </aside>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       </div>
     </main>
