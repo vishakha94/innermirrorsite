@@ -1,7 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { AboutThisWorkRichText, BOOK_TITLE_TOKEN } from "./about-this-work-rich-text";
+import {
+  AboutThisWorkRichText,
+  BOOK_TITLE_TOKEN,
+} from "@/components/about-this-work-rich-text";
 
 describe("AboutThisWorkRichText", () => {
   it("renders the book title in amber when token is present", () => {
@@ -37,4 +40,3 @@ describe("AboutThisWorkRichText", () => {
     expect(screen.getAllByText("Repeat")).toHaveLength(2);
   });
 });
-
