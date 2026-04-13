@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ExploreBookSections } from "@/components/explore-book-sections";
+import { CTA_COPY } from "@/lib/site-cta";
 import { MEDIUM_BLOG_PROFILE_URL, resolveYoutubeUrl } from "@/lib/site-externals";
 import { sanityFetch } from "@/sanity/lib/client";
 import { siteSettingsQuery } from "@/sanity/lib/queries";
@@ -51,7 +52,7 @@ export default async function ExploreTheBookPage() {
 
         <footer className="mt-12 flex flex-col items-center px-1 text-center sm:mt-14">
           <p className="font-serif text-lg font-semibold text-stone-900 sm:text-xl">
-            Ready to explore your inner world?
+            {CTA_COPY.exploreBookPage.footerHeadline}
           </p>
           <div
             className="mt-5 flex max-w-md flex-col items-center gap-3 text-[15px] leading-relaxed text-stone-700 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-2 sm:gap-y-2 sm:text-base md:text-lg"
@@ -66,14 +67,14 @@ export default async function ExploreTheBookPage() {
                 rel="noopener noreferrer"
                 className={linkCtaClass}
               >
-                Inner Mirror Blog
+                {CTA_COPY.exploreBookPage.innerMirrorBlog}
               </Link>
             </span>
             <span className="text-stone-500 sm:shrink-0">or</span>
             <span className="inline-flex min-h-11 items-center justify-center gap-2 sm:min-h-0">
               <IconYoutube className="size-5 shrink-0 text-[#a67c52]" aria-hidden />
               <Link href={youtubeUrl} target="_blank" rel="noopener noreferrer" className={linkCtaClass}>
-                YouTube channel
+                {CTA_COPY.exploreBookPage.youtubeChannel}
               </Link>
             </span>
           </div>

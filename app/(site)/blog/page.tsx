@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import { isNextDev } from "@/lib/is-next-dev";
+import { CTA_COPY } from "@/lib/site-cta";
 import { sanityFetch } from "@/sanity/lib/client";
 import { blogPostsQuery } from "@/sanity/lib/queries";
 
@@ -38,7 +39,7 @@ export default async function BlogIndexPage() {
               <>
                 No posts yet. Add one in{" "}
                 <Link href="/studio" className="font-medium text-amber-900 underline">
-                  Edit content
+                  {CTA_COPY.studio.editContent}
                 </Link>
                 .
               </>

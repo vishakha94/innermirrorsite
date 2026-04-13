@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 
 import { AboutThisWorkRichText } from "@/components/about-this-work-rich-text";
+import { DEFAULT_BOOK_TITLE } from "@/lib/site-cta";
 import { sanityFetch } from "@/sanity/lib/client";
 import { aboutAuthorPageQuery } from "@/sanity/lib/queries";
 
@@ -22,9 +23,6 @@ type AboutAuthorPagePayload = {
   about: AboutAuthorDoc;
   bookTitle: string | null;
 } | null;
-
-/** Used when Site settings → Book title is empty (substituted for {{bookTitle}}). */
-const DEFAULT_BOOK_TITLE = "Introspection, Your Inner Superpower Revealed";
 
 const aboutThisWorkBoxClass =
   "mt-8 rounded-lg bg-gradient-to-br from-amber-50/80 to-stone-50/50 px-5 py-4 font-serif text-lg leading-relaxed text-stone-800 shadow-sm";

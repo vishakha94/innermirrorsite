@@ -59,7 +59,11 @@ function IconList({ className }: { className?: string }) {
   );
 }
 
-function IconProfile({ className }: { className?: string }) {
+/**
+ * Pen — “Relatable Stories…”.
+ * Classic edit-pen silhouette; 24×24, stroke 1.5 (same language as {@link IconLightbulb}).
+ */
+function IconStoryPen({ className }: { className?: string }) {
   return (
     <svg
       className={className}
@@ -71,8 +75,7 @@ function IconProfile({ className }: { className?: string }) {
       strokeLinejoin="round"
       aria-hidden
     >
-      <circle cx="12" cy="8" r="3.5" />
-      <path d="M5 20v-1a7 7 0 0 1 14 0v1" />
+      <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
     </svg>
   );
 }
@@ -147,8 +150,30 @@ function IconSproutTile({ className }: { className?: string }) {
 }
 
 /**
+ * Magnifying glass — “Deep Self-Awareness (Your True Starting Point)”.
+ * Stroke-only: 24×24, stroke 1.5.
+ */
+function IconMagnifyingGlass({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m16.5 16.5 5 5" />
+    </svg>
+  );
+}
+
+/**
  * Lightbulb — “Clarity in Thoughts & Decisions”.
- * Stroke-only like {@link IconCompass} / {@link IconProfile}: 24×24, stroke 1.5.
+ * Stroke-only like {@link IconCompass}: 24×24, stroke 1.5.
  */
 function IconLightbulb({ className }: { className?: string }) {
   return (
@@ -165,6 +190,99 @@ function IconLightbulb({ className }: { className?: string }) {
       <path d="M12 3C8.5 3 5.5 6 5.5 9.5C5.5 13 8 15.5 9 16.5V17.5H15V16.5C16 15.5 18.5 13 18.5 9.5C18.5 6 15.5 3 12 3z" />
       <path d="M9 19.5h6" />
       <path d="M10 21h4" />
+    </svg>
+  );
+}
+
+/**
+ * Heart — “Stronger, Healthier Relationships”.
+ * Single-path outline: 24×24, stroke 1.5 (same language as {@link IconLightbulb}).
+ */
+function IconHeart({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  );
+}
+
+/**
+ * Balance scales (⚖️-like) — “Emotional Balance & Inner Stability”.
+ * Open frame + solid pans (matches compass/lights: stroke structure, fill accent).
+ */
+function IconBalance({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M12 5.75V19.25" />
+      <path d="M8.5 19.75h7" />
+      <path d="M4.75 5.75h14.5" />
+      <path d="M6.5 5.75V8.75" />
+      <path d="M17.5 5.75V8.75" />
+      <path d="M3.5 8.75h6l-3 4.25z" fill="currentColor" stroke="none" />
+      <path d="M14.5 8.75h6l-3 4.25z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+/**
+ * Leaf & stem — “Life” in “A More Peaceful & Purposeful Life”.
+ * Simple life / vitality mark (not the sprout tile). 24×24, stroke 1.5.
+ */
+function IconLife({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M12 4.5C8 6 6 10 6.5 14C7 17.5 9.2 19.8 12 20.5C14.8 19.8 17 17.5 17.5 14C18 10 16 6 12 4.5z" />
+      <path d="M12 6.25v11.25" />
+      <path d="M12 18v3.25" />
+    </svg>
+  );
+}
+
+/**
+ * Trending up — “Continuous Personal Growth”.
+ * Stroke-only: 24×24, stroke 1.5.
+ */
+function IconTrendingUp({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M22 7 13.5 15.5 8.5 10.5 2 17" />
+      <path d="M16 7h6v6" />
     </svg>
   );
 }
@@ -198,17 +316,23 @@ function InsideBody() {
       <div className="mt-8">
         <h3 className={subsectionTitleClass}>
           <IconList className="mt-0.5 size-5 shrink-0 text-[#a67c52] sm:size-6" />
-          <span className="min-w-0">74+ Attributes That Define You</span>
+          <span className="min-w-0">A powerful framework of 74 human attributes</span>
         </h3>
         <p className="mt-3 text-[15px] leading-relaxed text-stone-600 sm:text-base">
-          A powerful framework of 74 human attributes across:
+          Each attribute includes a simple 0–5 self-assessment scale.
         </p>
         <ul className="mt-4 list-disc space-y-2 pl-4 text-[15px] text-stone-600 sm:pl-5 sm:text-base">
-          <li>Core Attributes</li>
-          <li>Emotional Quotient</li>
-          <li>Tendencies</li>
-          <li>Habits &amp; Conduct</li>
+          <li>Where you are today</li>
+          <li>What patterns keep repeating</li>
+          <li>What truly needs attention</li>
         </ul>
+      </div>
+
+      <div className="mt-8">
+        <h3 className={subsectionTitleClass}>
+          <IconStoryPen className="mt-0.5 size-5 shrink-0 text-[#a67c52] sm:size-6" />
+          <span className="min-w-0">Relatable Stories That Feel Like Your Own Life</span>
+        </h3>
       </div>
     </>
   );
@@ -219,29 +343,29 @@ function WhyBody() {
     <>
       <div>
         <h3 className={subsectionTitleClass}>
+          <IconMagnifyingGlass className="mt-0.5 size-5 shrink-0 text-[#a67c52] sm:size-6" />
+          <span className="min-w-0">Deep Self-Awareness (Your True Starting Point)</span>
+        </h3>
+        <h3 className={subsectionTitleClass}>
           <IconLightbulb className="mt-0.5 size-5 shrink-0 text-[#a67c52] sm:size-6" />
           <span className="min-w-0">Clarity in Thoughts &amp; Decisions</span>
         </h3>
-        <p className="mt-3 text-[15px] leading-relaxed text-stone-600 sm:text-base">
-          When you see how your mind shapes reactions and choices, you can respond with more
-          intention. The workbook helps you trace recurring thoughts to their roots—so clarity
-          becomes something you build, not a mood you wait for.
-        </p>
-      </div>
-
-      <div className="mt-8">
         <h3 className={subsectionTitleClass}>
-          <IconProfile className="mt-0.5 size-5 shrink-0 text-[#a67c52] sm:size-6" />
-          <span className="min-w-0">Know Where You Stand</span>
+          <IconHeart className="mt-0.5 size-5 shrink-0 text-[#a67c52] sm:size-6" />
+          <span className="min-w-0">Stronger, Healthier Relationships</span>
         </h3>
-        <p className="mt-3 text-[15px] leading-relaxed text-stone-600 sm:text-base">
-          Each attribute includes a simple 0–5 self-assessment scale.
-        </p>
-        <ul className="mt-4 list-disc space-y-2 pl-4 text-[15px] text-stone-600 sm:pl-5 sm:text-base">
-          <li>Where you are today</li>
-          <li>What patterns keep repeating</li>
-          <li>What truly needs attention</li>
-        </ul>
+        <h3 className={subsectionTitleClass}>
+          <IconBalance className="mt-0.5 size-5 shrink-0 text-[#a67c52] sm:size-6" />
+          <span className="min-w-0">Emotional Balance &amp; Inner Stability</span>
+        </h3>
+        <h3 className={subsectionTitleClass}>
+          <IconLife className="mt-0.5 size-5 shrink-0 text-[#a67c52] sm:size-6" />
+          <span className="min-w-0">A More Peaceful &amp; Purposeful Life</span>
+        </h3>
+        <h3 className={subsectionTitleClass}>
+          <IconTrendingUp className="mt-0.5 size-5 shrink-0 text-[#a67c52] sm:size-6" />
+          <span className="min-w-0">Continuous Personal Growth</span>
+        </h3>
       </div>
     </>
   );

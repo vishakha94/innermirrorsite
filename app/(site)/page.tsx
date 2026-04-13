@@ -5,6 +5,13 @@ import { BookNewsSectionBody } from "@/components/book-news-section-body";
 import { MediumPostTeaser } from "@/components/medium-post-teaser";
 import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
 import { fetchMediumFeaturedFromSanity } from "@/lib/medium-post-preview";
+import {
+  CTA_COPY,
+  resolveAuthorName,
+  resolveBookTagline,
+  resolveBookTitle,
+  splitBookTitle,
+} from "@/lib/site-cta";
 import { MEDIUM_BLOG_PROFILE_URL, resolveAmazonBookPurchaseUrl } from "@/lib/site-externals";
 import { sanityFetch } from "@/sanity/lib/client";
 import {
@@ -32,22 +39,6 @@ type PostCard = {
   excerpt?: string;
 };
 
-const DEFAULT_BOOK_TITLE = "Introspection, Your Inner Superpower Revealed";
-const DEFAULT_BOOK_TAGLINE =
-  "A guide to mastering introspection through the Inner Mirror.";
-
-/** Split "Introspection, Your Inner Superpower Revealed" into main + subtitle lines. */
-function splitBookTitle(full: string): { main: string; subtitle: string } {
-  const idx = full.indexOf(",");
-  if (idx === -1) {
-    return { main: full.trim(), subtitle: "" };
-  }
-  return {
-    main: full.slice(0, idx).trim(),
-    subtitle: full.slice(idx + 1).trim(),
-  };
-}
-
 export default async function HomePage() {
   const [settings, posts, news] = await Promise.all([
     sanityFetch<SiteSettings>({ query: siteSettingsQuery, revalidate: 60 }),
@@ -58,9 +49,9 @@ export default async function HomePage() {
     settings?.featuredMediumArticleUrl,
   );
 
-  const authorName = settings?.authorName ?? "Vinay Singh";
-  const bookTitle = settings?.bookTitle?.trim() || DEFAULT_BOOK_TITLE;
-  const bookTagline = settings?.bookTagline?.trim() || DEFAULT_BOOK_TAGLINE;
+  const authorName = resolveAuthorName(settings?.authorName).value;
+  const bookTitle = resolveBookTitle(settings?.bookTitle).value;
+  const bookTagline = resolveBookTagline(settings?.bookTagline).value;
   const { main: titleMain, subtitle: titleSubtitle } = splitBookTitle(bookTitle);
 
   const latestPosts = posts?.slice(0, 3) ?? [];
@@ -96,7 +87,7 @@ export default async function HomePage() {
                   href="/explore-the-book"
                   className="rounded-full bg-stone-900 px-7 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-800"
                 >
-                  Explore the Book
+                  {CTA_COPY.home.exploreBook}
                 </Link>
                 <Link
                   href={bookPurchaseUrl}
@@ -104,7 +95,7 @@ export default async function HomePage() {
                   rel="noopener noreferrer"
                   className="rounded-full border border-stone-300 bg-white px-7 py-3.5 text-sm font-semibold text-stone-800 shadow-sm transition hover:border-stone-400"
                 >
-                  Get your copy
+                  {CTA_COPY.home.getYourCopy}
                 </Link>
               </div>
             </div>
@@ -135,7 +126,7 @@ export default async function HomePage() {
               rel="noopener noreferrer"
               className="text-sm font-medium text-amber-900 hover:underline"
             >
-              View all
+              {CTA_COPY.sections.viewAll}
             </Link>
           </div>
           {latestPosts.length > 0 ? (
@@ -182,7 +173,7 @@ export default async function HomePage() {
           <div className="mb-8 flex items-end justify-between gap-4">
             <h2 className="font-serif text-2xl font-semibold text-stone-900">Book news</h2>
             <Link href="/news" className="text-sm font-medium text-amber-900 hover:underline">
-              View all
+              {CTA_COPY.sections.viewAll}
             </Link>
           </div>
           <BookNewsSectionBody items={news ?? []} maxItems={4} />

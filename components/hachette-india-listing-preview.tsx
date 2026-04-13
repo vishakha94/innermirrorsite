@@ -1,3 +1,5 @@
+import { CTA_COPY } from "@/lib/site-cta";
+
 type HachetteIndiaListingPreviewProps = {
   url: string;
 };
@@ -30,7 +32,7 @@ export function HachetteIndiaListingPreview({ url }: HachetteIndiaListingPreview
           rel="noopener noreferrer"
           className="text-sm font-semibold text-amber-900 hover:underline"
         >
-          Open on Hachette India →
+          {CTA_COPY.hachette.openOnPublisher}
         </a>
       </div>
     </div>

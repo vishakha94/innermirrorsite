@@ -5,6 +5,15 @@ const DEFAULT_MEDIUM_FEED = "https://medium.com/feed/@IntrospectionDaily";
 export const FALLBACK_MEDIUM_ARTICLE_URL = "https://medium.com/p/4ef197334fff";
 
 /**
+ * Story URL from Sanity when set; otherwise {@link FALLBACK_MEDIUM_ARTICLE_URL} for RSS lookup.
+ */
+export function resolveFeaturedMediumArticleUrl(
+  articleUrl: string | null | undefined,
+): string {
+  return articleUrl?.trim() || FALLBACK_MEDIUM_ARTICLE_URL;
+}
+
+/**
  * Derive `https://medium.com/feed/@handle` from a story URL, or null to use the default feed.
  */
 export function mediumFeedUrlFromArticleUrl(articleUrl: string): string | null {
@@ -112,7 +121,7 @@ export async function fetchMediumPostById(
 export async function fetchMediumFeaturedFromSanity(
   articleUrl: string | null | undefined,
 ): Promise<MediumPostPreview | null> {
-  const resolved = articleUrl?.trim() || FALLBACK_MEDIUM_ARTICLE_URL;
+  const resolved = resolveFeaturedMediumArticleUrl(articleUrl);
   const postId = mediumPostIdFromInput(resolved);
   if (!postId) return null;
   const feed = mediumFeedUrlFromArticleUrl(resolved) ?? DEFAULT_MEDIUM_FEED;

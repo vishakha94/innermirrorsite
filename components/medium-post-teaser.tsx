@@ -1,3 +1,5 @@
+import { CTA_COPY } from "@/lib/site-cta";
+
 type MediumPostTeaserProps = {
   title: string;
   link: string;
@@ -61,7 +63,7 @@ export function MediumPostTeaser({
           className="inline-flex items-center justify-center rounded-full border border-stone-300 bg-[#f9f7f2] px-5 py-2.5 text-sm font-semibold text-stone-800 shadow-sm transition hover:border-amber-800/30 hover:text-stone-900"
           aria-label="Continue reading on Medium (opens in a new tab)"
         >
-          Continue reading
+          {CTA_COPY.medium.continueReading}
         </a>
       </div>
     </div>
