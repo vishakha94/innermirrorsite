@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 
 import { AboutThisWorkRichText } from "@/components/about-this-work-rich-text";
@@ -97,10 +98,28 @@ export default async function AboutAuthorPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
-      <h1 className="font-serif text-4xl font-semibold tracking-tight text-stone-900">
-        {title}
-      </h1>
-      {lead ? <p className="mt-3 leading-relaxed text-stone-600">{lead}</p> : null}
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_min(260px,34%)] lg:items-start lg:gap-x-10 lg:gap-y-3">
+        <h1 className="font-serif text-4xl font-semibold tracking-tight text-stone-900 lg:col-start-1 lg:row-start-1">
+          {title}
+        </h1>
+        <figure className="mx-auto w-full max-w-[280px] justify-self-center lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:mx-0 lg:max-w-none lg:justify-self-end">
+          <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-stone-200/40 shadow-xl ring-1 ring-stone-900/[0.08]">
+            <Image
+              src="/images/author-portrait.png"
+              alt="Portrait of Vinay Singh, author"
+              fill
+              className="object-cover object-[center_15%]"
+              sizes="(max-width: 1024px) 280px, 260px"
+              priority
+            />
+          </div>
+        </figure>
+        {lead ? (
+          <p className="leading-relaxed text-stone-600 lg:col-start-1 lg:row-start-2 lg:mt-0 lg:pr-2">
+            {lead}
+          </p>
+        ) : null}
+      </div>
 
       {aboutThisWorkBody ? (
         <div className={aboutThisWorkBoxClass} role="note">
