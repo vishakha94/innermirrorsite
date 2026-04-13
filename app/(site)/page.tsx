@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { BookNewsSectionBody } from "@/components/book-news-section-body";
 import { MediumPostTeaser } from "@/components/medium-post-teaser";
 import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
 import { fetchMediumFeaturedFromSanity } from "@/lib/medium-post-preview";
-import { MEDIUM_BLOG_PROFILE_URL } from "@/lib/site-externals";
+import { MEDIUM_BLOG_PROFILE_URL, resolveAmazonBookPurchaseUrl } from "@/lib/site-externals";
 import { sanityFetch } from "@/sanity/lib/client";
 import {
   blogPostsQuery,
@@ -20,6 +21,7 @@ type SiteSettings = {
   heroHeadline?: string;
   heroSubphrase?: string;
   featuredMediumArticleUrl?: string | null;
+  amazonBookPurchaseUrl?: string | null;
 } | null;
 
 type PostCard = {
@@ -62,7 +64,7 @@ export default async function HomePage() {
   const { main: titleMain, subtitle: titleSubtitle } = splitBookTitle(bookTitle);
 
   const latestPosts = posts?.slice(0, 3) ?? [];
-  const latestNews = news?.slice(0, 4) ?? [];
+  const bookPurchaseUrl = resolveAmazonBookPurchaseUrl(settings?.amazonBookPurchaseUrl);
 
   return (
     <main>
@@ -91,16 +93,18 @@ export default async function HomePage() {
               </p>
               <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
                 <Link
-                  href="/about-author"
+                  href="/explore-the-book"
                   className="rounded-full bg-stone-900 px-7 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-stone-800"
                 >
-                  Explore the book
+                  Explore the Book
                 </Link>
                 <Link
-                  href="/news"
+                  href={bookPurchaseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="rounded-full border border-stone-300 bg-white px-7 py-3.5 text-sm font-semibold text-stone-800 shadow-sm transition hover:border-stone-400"
                 >
-                  Start Reflecting
+                  Get your copy
                 </Link>
               </div>
             </div>
@@ -181,34 +185,7 @@ export default async function HomePage() {
               View all
             </Link>
           </div>
-          {latestNews.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-stone-300/90 bg-white/70 p-8 text-center text-stone-600">
-              Share launch dates, events, and milestones in{" "}
-              <Link href="/studio" className="font-medium text-amber-900 underline">
-                Book news
-              </Link>{" "}
-              in the editor.
-            </p>
-          ) : (
-            <ul className="space-y-4">
-              {latestNews.map((item) => (
-                <li key={item._id}>
-                  <Link
-                    href={`/news/${item.slug}`}
-                    className="flex flex-col gap-1 rounded-lg border border-stone-200/90 bg-white px-5 py-4 shadow-sm transition hover:border-amber-800/25 sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <span className="font-medium text-stone-900">{item.title}</span>
-                    <time
-                      dateTime={item.publishedAt}
-                      className="text-sm text-stone-500"
-                    >
-                      {new Date(item.publishedAt).toLocaleDateString()}
-                    </time>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          <BookNewsSectionBody items={news ?? []} maxItems={4} />
         </section>
       </div>
     </main>

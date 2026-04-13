@@ -15,7 +15,8 @@ export const siteSettingsQuery = groq`
     facebookUrl,
     youtubeUrl,
     linkedinUrl,
-    featuredMediumArticleUrl
+    featuredMediumArticleUrl,
+    amazonBookPurchaseUrl
   }
 `;
 

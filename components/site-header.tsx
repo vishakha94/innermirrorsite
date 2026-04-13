@@ -5,6 +5,7 @@ import { useEffect, useId, useState } from "react";
 
 import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
 import { SocialNavLinks, type SocialNavUrls } from "@/components/social-nav-links";
+import { isNextDev } from "@/lib/is-next-dev";
 import { MEDIUM_BLOG_PROFILE_URL } from "@/lib/site-externals";
 
 type NavProps = {
@@ -95,12 +96,14 @@ export function SiteHeader({ siteTitle, social = {} }: NavProps) {
             <Link href="/news" className="transition-colors hover:text-stone-900">
               Book news
             </Link>
-            <Link
-              href="/studio"
-              className="rounded-full border border-stone-300 bg-white px-3 py-1.5 text-stone-700 shadow-sm transition-colors hover:border-amber-800/30 hover:text-stone-900"
-            >
-              Edit content
-            </Link>
+            {isNextDev ? (
+              <Link
+                href="/studio"
+                className="rounded-full border border-stone-300 bg-white px-3 py-1.5 text-stone-700 shadow-sm transition-colors hover:border-amber-800/30 hover:text-stone-900"
+              >
+                Edit content
+              </Link>
+            ) : null}
           </nav>
 
           <button
@@ -165,13 +168,15 @@ export function SiteHeader({ siteTitle, social = {} }: NavProps) {
                 Book news
               </Link>
               <SocialNavLinks urls={social} variant="mobile" onNavigate={close} />
-              <Link
-                href="/studio"
-                className={`${linkClass} mt-2 border border-stone-200 bg-stone-50 justify-center`}
-                onClick={close}
-              >
-                Edit content
-              </Link>
+              {isNextDev ? (
+                <Link
+                  href="/studio"
+                  className={`${linkClass} mt-2 border border-stone-200 bg-stone-50 justify-center`}
+                  onClick={close}
+                >
+                  Edit content
+                </Link>
+              ) : null}
             </nav>
           </div>
         </div>

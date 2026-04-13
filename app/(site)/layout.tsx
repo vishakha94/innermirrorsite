@@ -1,5 +1,6 @@
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { resolveYoutubeUrl } from "@/lib/site-externals";
 import { sanityFetch } from "@/sanity/lib/client";
 import { siteSettingsQuery } from "@/sanity/lib/queries";
 
@@ -45,7 +46,7 @@ export default async function SiteLayout({
       "NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL",
     ),
     facebookUrl: resolvedSocialUrl(settings?.facebookUrl, "NEXT_PUBLIC_SOCIAL_FACEBOOK_URL"),
-    youtubeUrl: resolvedSocialUrl(settings?.youtubeUrl, "NEXT_PUBLIC_SOCIAL_YOUTUBE_URL"),
+    youtubeUrl: resolveYoutubeUrl(settings?.youtubeUrl),
     linkedinUrl: resolvedSocialUrl(settings?.linkedinUrl, "NEXT_PUBLIC_SOCIAL_LINKEDIN_URL"),
   };
 

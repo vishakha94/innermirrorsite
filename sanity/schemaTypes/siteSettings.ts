@@ -87,6 +87,13 @@ export const siteSettings = defineType({
       description:
         "Paste the full Medium article URL for the preview under “From the blog.” If empty, the site uses a default article from the codebase.",
     }),
+    defineField({
+      name: "amazonBookPurchaseUrl",
+      title: "Amazon / book purchase URL",
+      type: "url",
+      description:
+        "Full URL for the “Get the Book” button on the home page (e.g. Amazon.in product or storefront). If empty, the site uses `NEXT_PUBLIC_AMAZON_BOOK_PURCHASE_URL` or the default ASIN link in code.",
+    }),
   ],
   preview: {
     prepare() {

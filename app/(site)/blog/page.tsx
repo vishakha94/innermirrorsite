@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
+import { isNextDev } from "@/lib/is-next-dev";
 import { sanityFetch } from "@/sanity/lib/client";
 import { blogPostsQuery } from "@/sanity/lib/queries";
 
@@ -33,11 +34,17 @@ export default async function BlogIndexPage() {
       <ul className="mt-12 space-y-10">
         {list.length === 0 ? (
           <li className="rounded-xl border border-dashed border-stone-300 bg-white/60 p-10 text-center text-stone-600">
-            No posts yet. Add one in{" "}
-            <Link href="/studio" className="font-medium text-amber-900 underline">
-              Edit content
-            </Link>
-            .
+            {isNextDev ? (
+              <>
+                No posts yet. Add one in{" "}
+                <Link href="/studio" className="font-medium text-amber-900 underline">
+                  Edit content
+                </Link>
+                .
+              </>
+            ) : (
+              "No posts yet."
+            )}
           </li>
         ) : (
           list.map((post) => (
