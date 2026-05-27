@@ -8,6 +8,7 @@ export type BookNewsMainImage = {
 export type BookNewsStaticImage = {
   src: string;
   alt: string;
+  caption?: string;
 };
 
 export type BookNewsItem = {
@@ -50,9 +51,15 @@ export const DEFAULT_BOOK_NEWS_ENTRIES = [
       "Vinay Singh in conversation about the book, introspection, and the Inner Mirror approach.",
     publishedAt: "2026-04-23T12:00:00.000Z",
     defaultImage: {
-      src: "/images/news/book-event-vinay-singh-w-anchor.png",
-      alt: "Vinay Singh speaking with an anchor about Introspection",
+      src: "/images/news/book-event-author-w-anchor.png",
+      alt: "Vinay Singh in conversation with an anchor beside the Introspection book display",
     },
+    defaultGalleryImages: [
+      {
+        src: "/images/news/book-event-w-family.png",
+        alt: "Vinay Singh with family holding a copy of Introspection at the book event",
+      },
+    ],
   },
   {
     _id: "default-news-seminar-medanta",
@@ -66,6 +73,11 @@ export const DEFAULT_BOOK_NEWS_ENTRIES = [
       alt: "Workshop on work-life harmony and stress-free living at Medanta Hospital",
     },
     defaultGalleryImages: [
+      {
+        src: "/images/news/seminar-medanta-doctors.png",
+        alt: "Medanta neurosurgeon and other specialists in the workshop audience",
+        caption: "In audience, Medanta Neurosurgeon Dr. Manish Vaish and other Specialists",
+      },
       {
         src: "/images/news/seminar-medanta-2.png",
         alt: "Vinay Singh leading the Inner Mirror workshop with Medanta doctors and nursing staff",

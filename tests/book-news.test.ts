@@ -44,8 +44,12 @@ describe("getBookNewsItemBySlug", () => {
 
   it("includes gallery images for seminar-medanta", () => {
     const item = getBookNewsItemBySlug("seminar-medanta", null);
-    expect(item?.defaultGalleryImages).toHaveLength(1);
-    expect(item?.defaultGalleryImages?.[0]?.src).toBe("/images/news/seminar-medanta-2.png");
+    expect(item?.defaultGalleryImages).toHaveLength(2);
+    expect(item?.defaultGalleryImages?.[0]?.src).toBe("/images/news/seminar-medanta-doctors.png");
+    expect(item?.defaultGalleryImages?.[0]?.caption).toBe(
+      "In audience, Medanta Neurosurgeon Dr. Manish Vaish and other Specialists",
+    );
+    expect(item?.defaultGalleryImages?.[1]?.src).toBe("/images/news/seminar-medanta-2.png");
   });
 });
 

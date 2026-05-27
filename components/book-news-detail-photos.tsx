@@ -2,13 +2,33 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 
 import { BookNewsItemImage } from "@/components/book-news-item-image";
-import { bookNewsImageSource, type BookNewsItem } from "@/lib/book-news";
+import { bookNewsImageSource, type BookNewsItem, type BookNewsStaticImage } from "@/lib/book-news";
 
 type BookNewsDetailPhotosProps = {
   item: BookNewsItem;
 };
 
 const detailSizes = "(max-width: 768px) 100vw, 48rem";
+
+function GalleryPhoto({ image }: { image: BookNewsStaticImage }) {
+  return (
+    <figure className="overflow-hidden rounded-xl border border-stone-200/80 bg-white shadow-sm">
+      <Image
+        src={image.src}
+        alt={image.alt}
+        width={1400}
+        height={933}
+        className="h-auto w-full"
+        sizes={detailSizes}
+      />
+      {image.caption ? (
+        <figcaption className="border-t border-stone-100 px-4 py-3 text-center text-sm text-stone-600 sm:px-5">
+          {image.caption}
+        </figcaption>
+      ) : null}
+    </figure>
+  );
+}
 
 function PhotoFrame({ children }: { children: ReactNode }) {
   return (
@@ -36,16 +56,7 @@ export function BookNewsDetailPhotos({ item }: BookNewsDetailPhotosProps) {
         </PhotoFrame>
       ) : null}
       {gallery.map((image) => (
-        <PhotoFrame key={image.src}>
-          <Image
-            src={image.src}
-            alt={image.alt}
-            width={1400}
-            height={933}
-            className="h-auto w-full"
-            sizes={detailSizes}
-          />
-        </PhotoFrame>
+        <GalleryPhoto key={image.src} image={image} />
       ))}
     </div>
   );
