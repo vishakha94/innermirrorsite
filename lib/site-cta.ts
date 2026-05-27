@@ -22,6 +22,20 @@ export const CTA_COPY = {
     youtubeChannel: "YouTube channel",
     footerHeadline: "Ready to explore your inner world?",
   },
+  newsletter: {
+    emailLabel: "Email address",
+    emailPlaceholder: "you@example.com",
+    submit: "Join the mailing list",
+    submitting: "Joining…",
+    privacyNote:
+      "Occasional emails about the book, news, videos, and articles. Unsubscribe anytime by replying to any message.",
+    success: "You're on the list. Watch your inbox for updates from Inner Mirror.",
+    alreadySubscribed: "You're already subscribed — thank you for being here.",
+    resubscribed: "Welcome back — you're subscribed again.",
+    invalidEmail: "Please enter a valid email address.",
+    error: "Something went wrong. Please try again in a moment.",
+    notConfigured: "Sign-ups are temporarily unavailable. Please try again later.",
+  },
   studio: {
     editContent: "Edit content",
   },

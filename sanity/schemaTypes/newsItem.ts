@@ -34,16 +34,24 @@ export const newsItem = defineType({
       rows: 2,
     }),
     defineField({
+      name: "mainImage",
+      title: "Photo",
+      type: "image",
+      options: { hotspot: true },
+      fields: [{ name: "alt", type: "string", title: "Alt text" }],
+    }),
+    defineField({
       name: "body",
       title: "Full update",
       type: "blockContent",
     }),
   ],
   preview: {
-    select: { title: "title", date: "publishedAt" },
-    prepare({ title, date }) {
+    select: { title: "title", media: "mainImage", date: "publishedAt" },
+    prepare({ title, media, date }) {
       return {
         title,
+        media,
         subtitle: date ? new Date(date).toLocaleDateString() : "",
       };
     },

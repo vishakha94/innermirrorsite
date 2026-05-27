@@ -2,27 +2,43 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
+import { BookNewsDetailPhotos } from "@/components/book-news-detail-photos";
 import { RichText } from "@/components/portable-text";
+import {
+  DEFAULT_BOOK_NEWS_SLUGS,
+  getBookNewsItemBySlug,
+  type BookNewsItem,
+} from "@/lib/book-news";
 import { getSanityClient, sanityFetch } from "@/sanity/lib/client";
-import { newsItemBySlugQuery } from "@/sanity/lib/queries";
-
-type NewsItem = {
-  title: string;
-  slug: string;
-  publishedAt: string;
-  excerpt?: string;
-  body: unknown;
-};
+import { newsItemBySlugQuery, newsItemsQuery } from "@/sanity/lib/queries";
 
 export async function generateStaticParams() {
   const client = getSanityClient();
-  if (!client) {
-    return [];
+  const slugs = new Set<string>(DEFAULT_BOOK_NEWS_SLUGS);
+
+  if (client) {
+    const cmsSlugs = await client.fetch<string[]>(
+      `*[_type == "newsItem" && defined(slug.current)].slug.current`,
+    );
+    for (const slug of cmsSlugs) {
+      slugs.add(slug);
+    }
   }
-  const slugs = await client.fetch<string[]>(
-    `*[_type == "newsItem" && defined(slug.current)].slug.current`,
-  );
-  return slugs.map((slug) => ({ slug }));
+
+  return [...slugs].map((slug) => ({ slug }));
+}
+
+async function loadNewsItem(slug: string): Promise<BookNewsItem | null> {
+  const [allCms, detail] = await Promise.all([
+    sanityFetch<BookNewsItem[]>({ query: newsItemsQuery, revalidate: 60 }),
+    sanityFetch<BookNewsItem | null>({
+      query: newsItemBySlugQuery,
+      params: { slug },
+      revalidate: 60,
+    }),
+  ]);
+
+  return getBookNewsItemBySlug(slug, allCms, detail);
 }
 
 export async function generateMetadata({
@@ -31,11 +47,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const item = await sanityFetch<NewsItem | null>({
-    query: newsItemBySlugQuery,
-    params: { slug },
-    revalidate: 60,
-  });
+  const item = await loadNewsItem(slug);
   if (!item) {
     return { title: "News not found" };
   }
@@ -51,15 +63,13 @@ export default async function NewsItemPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const item = await sanityFetch<NewsItem | null>({
-    query: newsItemBySlugQuery,
-    params: { slug },
-    revalidate: 60,
-  });
+  const item = await loadNewsItem(slug);
 
   if (!item) {
     notFound();
   }
+
+  const hasBody = Array.isArray(item.body) && item.body.length > 0;
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
@@ -80,9 +90,12 @@ export default async function NewsItemPage({
         {item.excerpt ? (
           <p className="mt-4 text-lg leading-relaxed text-stone-600">{item.excerpt}</p>
         ) : null}
-        <div className="prose-custom mt-10">
-          <RichText value={item.body} />
-        </div>
+        <BookNewsDetailPhotos item={item} />
+        {hasBody ? (
+          <div className="prose-custom mt-10">
+            <RichText value={item.body} />
+          </div>
+        ) : null}
       </article>
     </main>
   );

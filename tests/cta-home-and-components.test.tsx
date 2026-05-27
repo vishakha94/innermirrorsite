@@ -92,6 +92,7 @@ describe("Home page CTAs (Sanity mock = minimal settings → fallbacks for hero 
     expect(getCopy.getAttribute("href")).toMatch(/^https?:\/\//);
 
     expect(screen.getByRole("heading", { name: "From YouTube" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Stay in the loop" })).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: CTA_COPY.sections.viewChannel }),
     ).toHaveAttribute("href", DEFAULT_YOUTUBE_SHORTS_URL);

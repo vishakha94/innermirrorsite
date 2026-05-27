@@ -4,6 +4,7 @@ import { aboutAuthor } from "./aboutAuthor";
 import { blockContent } from "./blockContent";
 import { blogPost } from "./blogPost";
 import { newsItem } from "./newsItem";
+import { newsletterSubscriber } from "./newsletterSubscriber";
 import { siteSettings } from "./siteSettings";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
@@ -11,5 +12,6 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   aboutAuthor,
   blogPost,
   newsItem,
+  newsletterSubscriber,
   blockContent,
 ];

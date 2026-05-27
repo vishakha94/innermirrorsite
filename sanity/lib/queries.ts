@@ -22,7 +22,9 @@ export const siteSettingsQuery = groq`
     },
     linkedinUrl,
     featuredMediumArticleUrl,
-    amazonBookPurchaseUrl
+    amazonBookPurchaseUrl,
+    newsletterHeadline,
+    newsletterDescription
   }
 `;
 
@@ -83,7 +85,8 @@ export const newsItemsQuery = groq`
     title,
     "slug": slug.current,
     publishedAt,
-    excerpt
+    excerpt,
+    mainImage
   }
 `;
 
@@ -94,6 +97,7 @@ export const newsItemBySlugQuery = groq`
     "slug": slug.current,
     publishedAt,
     excerpt,
+    mainImage,
     body
   }
 `;

@@ -1,5 +1,6 @@
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { resolveNewsletterCopy } from "@/lib/newsletter";
 import { resolveYoutubeUrl } from "@/lib/site-externals";
 import { sanityFetch } from "@/sanity/lib/client";
 import { siteSettingsQuery } from "@/sanity/lib/queries";
@@ -11,6 +12,8 @@ type Settings = {
   facebookUrl?: string | null;
   youtubeUrl?: string | null;
   linkedinUrl?: string | null;
+  newsletterHeadline?: string | null;
+  newsletterDescription?: string | null;
 } | null;
 
 /** Sanity wins; optional `.env.local` fallbacks so links show without republishing. */
@@ -50,11 +53,13 @@ export default async function SiteLayout({
     linkedinUrl: resolvedSocialUrl(settings?.linkedinUrl, "NEXT_PUBLIC_SOCIAL_LINKEDIN_URL"),
   };
 
+  const newsletterCopy = resolveNewsletterCopy(settings);
+
   return (
     <div className="flex min-h-full flex-col">
       <SiteHeader siteTitle={siteTitle} social={social} />
       <div className="flex-1">{children}</div>
-      <SiteFooter authorName={authorName} />
+      <SiteFooter authorName={authorName} newsletterCopy={newsletterCopy} />
     </div>
   );
 }

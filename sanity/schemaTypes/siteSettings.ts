@@ -147,6 +147,19 @@ export const siteSettings = defineType({
       description:
         "Full URL for the “Get the Book” button on the home page (e.g. Amazon.in product or storefront). If empty, the site uses `NEXT_PUBLIC_AMAZON_BOOK_PURCHASE_URL` or the default ASIN link in code.",
     }),
+    defineField({
+      name: "newsletterHeadline",
+      title: "Newsletter headline",
+      type: "string",
+      description: "Heading for the mailing list signup on the home page and footer.",
+    }),
+    defineField({
+      name: "newsletterDescription",
+      title: "Newsletter description",
+      type: "text",
+      rows: 3,
+      description: "Short text under the headline explaining what subscribers receive.",
+    }),
   ],
   preview: {
     prepare() {

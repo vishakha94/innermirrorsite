@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BookNewsSectionBody } from "@/components/book-news-section-body";
 import { HomeYoutubeSection } from "@/components/home-youtube-section";
 import { MediumPostTeaser } from "@/components/medium-post-teaser";
+import { NewsletterSignupSection } from "@/components/newsletter-signup-section";
 import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
 import { fetchMediumFeaturedFromSanity } from "@/lib/medium-post-preview";
 import {
@@ -15,6 +16,8 @@ import {
 } from "@/lib/site-cta";
 import { MEDIUM_BLOG_PROFILE_URL, resolveAmazonBookPurchaseUrl, resolveYoutubeShortsUrl } from "@/lib/site-externals";
 import { resolveHomeYoutubeVideos, type SanityHomeYoutubeVideo } from "@/lib/youtube-embed";
+import { resolveNewsletterCopy } from "@/lib/newsletter";
+import { resolveBookNewsItems, type BookNewsItem } from "@/lib/book-news";
 import { sanityFetch } from "@/sanity/lib/client";
 import {
   blogPostsQuery,
@@ -33,6 +36,8 @@ type SiteSettings = {
   amazonBookPurchaseUrl?: string | null;
   youtubeShortsUrl?: string | null;
   homeYoutubeVideos?: SanityHomeYoutubeVideo[] | null;
+  newsletterHeadline?: string | null;
+  newsletterDescription?: string | null;
 } | null;
 
 type PostCard = {
@@ -47,8 +52,9 @@ export default async function HomePage() {
   const [settings, posts, news] = await Promise.all([
     sanityFetch<SiteSettings>({ query: siteSettingsQuery, revalidate: 60 }),
     sanityFetch<PostCard[]>({ query: blogPostsQuery, revalidate: 60 }),
-    sanityFetch<PostCard[]>({ query: newsItemsQuery, revalidate: 60 }),
+    sanityFetch<BookNewsItem[]>({ query: newsItemsQuery, revalidate: 60 }),
   ]);
+  const bookNews = resolveBookNewsItems(news);
   const mediumFeatured = await fetchMediumFeaturedFromSanity(
     settings?.featuredMediumArticleUrl,
   );
@@ -62,6 +68,7 @@ export default async function HomePage() {
   const bookPurchaseUrl = resolveAmazonBookPurchaseUrl(settings?.amazonBookPurchaseUrl);
   const youtubeShortsUrl = resolveYoutubeShortsUrl(settings?.youtubeShortsUrl);
   const homeYoutubeVideos = resolveHomeYoutubeVideos(settings?.homeYoutubeVideos);
+  const newsletterCopy = resolveNewsletterCopy(settings);
 
   return (
     <main>
@@ -184,8 +191,10 @@ export default async function HomePage() {
               {CTA_COPY.sections.viewAll}
             </Link>
           </div>
-          <BookNewsSectionBody items={news ?? []} maxItems={4} />
+          <BookNewsSectionBody items={bookNews} maxItems={4} />
         </section>
+
+        <NewsletterSignupSection copy={newsletterCopy} source="home" />
       </div>
     </main>
   );

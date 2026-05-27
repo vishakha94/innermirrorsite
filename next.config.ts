@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         destination: "/studio/structure/:path*",
         permanent: false,
       },
+      {
+        source: "/news/seminar-medanta-1",
+        destination: "/news/seminar-medanta",
+        permanent: true,
+      },
     ];
   },
   images: {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { BookNewsSectionBody } from "@/components/book-news-section-body";
+import { resolveBookNewsItems, type BookNewsItem } from "@/lib/book-news";
 import { sanityFetch } from "@/sanity/lib/client";
 import { newsItemsQuery } from "@/sanity/lib/queries";
 
@@ -8,21 +9,13 @@ export const metadata: Metadata = {
   title: "Book news",
 };
 
-type NewsCard = {
-  _id: string;
-  title: string;
-  slug: string;
-  publishedAt: string;
-  excerpt?: string;
-};
-
 export default async function NewsIndexPage() {
-  const items = await sanityFetch<NewsCard[]>({
+  const items = await sanityFetch<BookNewsItem[]>({
     query: newsItemsQuery,
     revalidate: 60,
   });
 
-  const list = items ?? [];
+  const list = resolveBookNewsItems(items);
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
