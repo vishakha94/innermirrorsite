@@ -90,11 +90,7 @@ export const siteSettings = defineType({
       type: "array",
       description:
         "Portrait videos embedded under “From YouTube.” Paste watch or Shorts URLs. If empty, the site uses default video links from the codebase.",
-      initialValue: DEFAULT_HOME_YOUTUBE_VIDEO_ENTRIES.map(({ url, title, startSeconds }) => ({
-        url,
-        title,
-        ...(startSeconds != null ? { startSeconds } : {}),
-      })),
+      initialValue: [...DEFAULT_HOME_YOUTUBE_VIDEO_ENTRIES],
       of: [
         defineArrayMember({
           type: "object",
