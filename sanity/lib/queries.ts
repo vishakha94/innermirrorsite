@@ -14,6 +14,12 @@ export const siteSettingsQuery = groq`
     instagramUrl,
     facebookUrl,
     youtubeUrl,
+    youtubeShortsUrl,
+    homeYoutubeVideos[]{
+      url,
+      title,
+      startSeconds
+    },
     linkedinUrl,
     featuredMediumArticleUrl,
     amazonBookPurchaseUrl

@@ -20,6 +20,7 @@ describe("CTA_COPY", () => {
     expect(CTA_COPY.hachette.openOnPublisher).toBe("Open on Hachette India →");
     expect(CTA_COPY.exploreBookPage.innerMirrorBlog).toBe("Inner Mirror Blog");
     expect(CTA_COPY.exploreBookPage.youtubeChannel).toBe("YouTube channel");
+    expect(CTA_COPY.sections.viewChannel).toBe("View channel");
     expect(CTA_COPY.exploreBookPage.footerHeadline).toBe("Ready to explore your inner world?");
     expect(CTA_COPY.studio.editContent).toBe("Edit content");
   });

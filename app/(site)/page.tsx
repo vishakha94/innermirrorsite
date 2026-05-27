@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BookNewsSectionBody } from "@/components/book-news-section-body";
+import { HomeYoutubeSection } from "@/components/home-youtube-section";
 import { MediumPostTeaser } from "@/components/medium-post-teaser";
 import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
 import { fetchMediumFeaturedFromSanity } from "@/lib/medium-post-preview";
@@ -12,7 +13,8 @@ import {
   resolveBookTitle,
   splitBookTitle,
 } from "@/lib/site-cta";
-import { MEDIUM_BLOG_PROFILE_URL, resolveAmazonBookPurchaseUrl } from "@/lib/site-externals";
+import { MEDIUM_BLOG_PROFILE_URL, resolveAmazonBookPurchaseUrl, resolveYoutubeShortsUrl } from "@/lib/site-externals";
+import { resolveHomeYoutubeVideos, type SanityHomeYoutubeVideo } from "@/lib/youtube-embed";
 import { sanityFetch } from "@/sanity/lib/client";
 import {
   blogPostsQuery,
@@ -29,6 +31,8 @@ type SiteSettings = {
   heroSubphrase?: string;
   featuredMediumArticleUrl?: string | null;
   amazonBookPurchaseUrl?: string | null;
+  youtubeShortsUrl?: string | null;
+  homeYoutubeVideos?: SanityHomeYoutubeVideo[] | null;
 } | null;
 
 type PostCard = {
@@ -56,6 +60,8 @@ export default async function HomePage() {
 
   const latestPosts = posts?.slice(0, 3) ?? [];
   const bookPurchaseUrl = resolveAmazonBookPurchaseUrl(settings?.amazonBookPurchaseUrl);
+  const youtubeShortsUrl = resolveYoutubeShortsUrl(settings?.youtubeShortsUrl);
+  const homeYoutubeVideos = resolveHomeYoutubeVideos(settings?.homeYoutubeVideos);
 
   return (
     <main>
@@ -117,6 +123,8 @@ export default async function HomePage() {
       </section>
 
       <div className="mx-auto max-w-6xl space-y-20 px-4 py-16 sm:px-6">
+        <HomeYoutubeSection viewChannelUrl={youtubeShortsUrl} videos={homeYoutubeVideos} />
+
         <section>
           <div className="mb-8 flex items-end justify-between gap-4">
             <h2 className="font-serif text-2xl font-semibold text-stone-900">From the blog</h2>

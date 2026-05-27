@@ -5,7 +5,12 @@ import HomePage from "@/app/(site)/page";
 import { HachetteIndiaListingPreview } from "@/components/hachette-india-listing-preview";
 import { MediumPostTeaser } from "@/components/medium-post-teaser";
 import { CTA_COPY, DEFAULT_BOOK_TITLE, splitBookTitle } from "@/lib/site-cta";
-import { HACHETTE_INDIA_BOOK_LISTING_URL, MEDIUM_BLOG_PROFILE_URL } from "@/lib/site-externals";
+import {
+  DEFAULT_YOUTUBE_SHORTS_URL,
+  HACHETTE_INDIA_BOOK_LISTING_URL,
+  MEDIUM_BLOG_PROFILE_URL,
+} from "@/lib/site-externals";
+import { defaultHomeYoutubeVideos } from "@/lib/youtube-embed";
 
 vi.mock("next/image", () => ({
   default: function MockImage({
@@ -86,10 +91,52 @@ describe("Home page CTAs (Sanity mock = minimal settings → fallbacks for hero 
     const getCopy = screen.getByRole("link", { name: CTA_COPY.home.getYourCopy });
     expect(getCopy.getAttribute("href")).toMatch(/^https?:\/\//);
 
+    expect(screen.getByRole("heading", { name: "From YouTube" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: CTA_COPY.sections.viewChannel }),
+    ).toHaveAttribute("href", DEFAULT_YOUTUBE_SHORTS_URL);
+
     const viewAllLinks = screen.getAllByRole("link", { name: CTA_COPY.sections.viewAll });
     expect(viewAllLinks).toHaveLength(2);
     expect(viewAllLinks[0]).toHaveAttribute("href", MEDIUM_BLOG_PROFILE_URL);
     expect(viewAllLinks[1]).toHaveAttribute("href", "/news");
+
+    for (const video of defaultHomeYoutubeVideos()) {
+      expect(screen.getByTitle(video.title)).toHaveAttribute(
+        "src",
+        expect.stringContaining(video.videoId),
+      );
+    }
+  });
+
+  it("renders YouTube videos from Sanity when provided", async () => {
+    sanityFetch.mockImplementation((opts: { query: string }) => {
+      const q = opts.query;
+      if (q.includes("siteSettings")) {
+        return Promise.resolve({
+          siteTitle: "Test Site",
+          authorName: "Author",
+          homeYoutubeVideos: [
+            {
+              url: "https://www.youtube.com/shorts/cmsVideo1",
+              title: "CMS Short",
+            },
+          ],
+        });
+      }
+      if (q.includes("blogPost")) return Promise.resolve([]);
+      if (q.includes("newsItem")) return Promise.resolve([]);
+      return Promise.resolve(null);
+    });
+
+    const page = await HomePage();
+    render(page);
+
+    expect(screen.getByTitle("CMS Short")).toHaveAttribute(
+      "src",
+      "https://www.youtube.com/embed/cmsVideo1",
+    );
+    expect(screen.queryByTitle(defaultHomeYoutubeVideos()[0].title)).not.toBeInTheDocument();
   });
 
   it("shows fallback split hero title when bookTitle is absent from Sanity", async () => {

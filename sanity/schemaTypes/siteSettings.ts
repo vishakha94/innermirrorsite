@@ -1,5 +1,7 @@
 import { CogIcon } from "@sanity/icons";
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
+
+import { DEFAULT_HOME_YOUTUBE_VIDEO_ENTRIES } from "@/lib/youtube-embed";
 
 export const siteSettings = defineType({
   name: "siteSettings",
@@ -74,6 +76,61 @@ export const siteSettings = defineType({
       name: "youtubeUrl",
       title: "YouTube URL",
       type: "url",
+    }),
+    defineField({
+      name: "youtubeShortsUrl",
+      title: "YouTube Shorts URL (home)",
+      type: "url",
+      description:
+        "Link for “View channel” under “From YouTube” on the home page (e.g. your channel’s Shorts tab). If empty, the site uses `NEXT_PUBLIC_YOUTUBE_SHORTS_URL` or the default Shorts link in code.",
+    }),
+    defineField({
+      name: "homeYoutubeVideos",
+      title: "Home page YouTube videos",
+      type: "array",
+      description:
+        "Portrait videos embedded under “From YouTube.” Paste watch or Shorts URLs. If empty, the site uses default video links from the codebase.",
+      initialValue: DEFAULT_HOME_YOUTUBE_VIDEO_ENTRIES.map(({ url, title, startSeconds }) => ({
+        url,
+        title,
+        ...(startSeconds != null ? { startSeconds } : {}),
+      })),
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "homeYoutubeVideo",
+          title: "YouTube video",
+          fields: [
+            defineField({
+              name: "url",
+              title: "YouTube URL",
+              type: "url",
+              description: "Watch, Shorts, or youtu.be link.",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "title",
+              title: "Accessible title",
+              type: "string",
+              description: "Short label for screen readers (e.g. video topic).",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "startSeconds",
+              title: "Start at (seconds)",
+              type: "number",
+              description: "Optional. Overrides any start time in the URL.",
+              validation: (Rule) => Rule.min(0).integer(),
+            }),
+          ],
+          preview: {
+            select: { title: "title", url: "url" },
+            prepare({ title, url }) {
+              return { title: title || "YouTube video", subtitle: url };
+            },
+          },
+        }),
+      ],
     }),
     defineField({
       name: "linkedinUrl",

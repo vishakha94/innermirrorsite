@@ -3,8 +3,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   AMAZON_IN_BOOK_PURCHASE_URL,
   DEFAULT_YOUTUBE_CHANNEL_URL,
+  DEFAULT_YOUTUBE_SHORTS_URL,
   resolveAmazonBookPurchaseUrl,
   resolveAmazonBookPurchaseUrlWithSource,
+  resolveYoutubeShortsUrl,
+  resolveYoutubeShortsUrlWithSource,
   resolveYoutubeUrl,
   resolveYoutubeUrlWithSource,
 } from "@/lib/site-externals";
@@ -72,5 +75,37 @@ describe("resolveYoutubeUrlWithSource", () => {
       source: "default",
     });
     expect(resolveYoutubeUrl(undefined)).toBe(DEFAULT_YOUTUBE_CHANNEL_URL);
+  });
+});
+
+describe("resolveYoutubeShortsUrlWithSource", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it("prefers Sanity URL when set", () => {
+    expect(
+      resolveYoutubeShortsUrlWithSource("https://youtube.com/@custom/shorts"),
+    ).toEqual({
+      url: "https://youtube.com/@custom/shorts",
+      source: "sanity",
+    });
+  });
+
+  it("uses env when Sanity empty", () => {
+    vi.stubEnv("NEXT_PUBLIC_YOUTUBE_SHORTS_URL", "https://youtube.com/@fromenv/shorts");
+    expect(resolveYoutubeShortsUrlWithSource(null)).toEqual({
+      url: "https://youtube.com/@fromenv/shorts",
+      source: "env",
+    });
+  });
+
+  it("uses default Shorts URL when Sanity and env are empty", () => {
+    vi.stubEnv("NEXT_PUBLIC_YOUTUBE_SHORTS_URL", "");
+    expect(resolveYoutubeShortsUrlWithSource(undefined)).toEqual({
+      url: DEFAULT_YOUTUBE_SHORTS_URL,
+      source: "default",
+    });
+    expect(resolveYoutubeShortsUrl(undefined)).toBe(DEFAULT_YOUTUBE_SHORTS_URL);
   });
 });

@@ -9,6 +9,7 @@ export const CTA_COPY = {
   },
   sections: {
     viewAll: "View all",
+    viewChannel: "View channel",
   },
   medium: {
     continueReading: "Continue reading",

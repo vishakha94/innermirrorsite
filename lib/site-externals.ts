@@ -34,6 +34,10 @@ export function resolveAmazonBookPurchaseUrl(
 export const DEFAULT_YOUTUBE_CHANNEL_URL =
   "https://www.youtube.com/@IntrospectionDaily" as const;
 
+/** YouTube Shorts tab for the default channel — home page “View channel” CTA. */
+export const DEFAULT_YOUTUBE_SHORTS_URL =
+  "https://www.youtube.com/@IntrospectionDaily/shorts" as const;
+
 /** Resolve YouTube: Sanity → env → {@link DEFAULT_YOUTUBE_CHANNEL_URL}. */
 export function resolveYoutubeUrlWithSource(
   fromSanity: string | null | undefined,
@@ -47,4 +51,19 @@ export function resolveYoutubeUrlWithSource(
 
 export function resolveYoutubeUrl(fromSanity: string | null | undefined): string {
   return resolveYoutubeUrlWithSource(fromSanity).url;
+}
+
+/** Resolve YouTube Shorts tab: Sanity → env → {@link DEFAULT_YOUTUBE_SHORTS_URL}. */
+export function resolveYoutubeShortsUrlWithSource(
+  fromSanity: string | null | undefined,
+): { url: string; source: ExternalUrlSource } {
+  const s = typeof fromSanity === "string" ? fromSanity.trim() : "";
+  if (s) return { url: s, source: "sanity" };
+  const e = process.env.NEXT_PUBLIC_YOUTUBE_SHORTS_URL?.trim();
+  if (e) return { url: e, source: "env" };
+  return { url: DEFAULT_YOUTUBE_SHORTS_URL, source: "default" };
+}
+
+export function resolveYoutubeShortsUrl(fromSanity: string | null | undefined): string {
+  return resolveYoutubeShortsUrlWithSource(fromSanity).url;
 }
