@@ -14,6 +14,60 @@ type ExistingSubscriber = {
   status?: string | null;
 } | null;
 
+type BeehiivSubscribeStatus = "created" | "already_subscribed";
+
+function getBeehiivConfig(): { apiKey: string; publicationId: string } | null {
+  const apiKey = process.env.BEEHIIV_API_KEY?.trim();
+  const publicationId = process.env.BEEHIIV_PUBLICATION_ID?.trim();
+  if (!apiKey || !publicationId) return null;
+  return { apiKey, publicationId };
+}
+
+async function subscribeWithBeehiiv(
+  email: string,
+  source: NewsletterSignupSource,
+): Promise<BeehiivSubscribeStatus> {
+  const config = getBeehiivConfig();
+  if (!config) {
+    throw new Error("Beehiiv not configured");
+  }
+
+  const response = await fetch(
+    `https://api.beehiiv.com/v2/publications/${config.publicationId}/subscriptions`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${config.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        reactivate_existing: true,
+        send_welcome_email: true,
+        utm_source: source,
+      }),
+    },
+  );
+
+  if (response.ok) {
+    return "created";
+  }
+
+  let message = "";
+  try {
+    const payload = (await response.json()) as { errors?: Array<{ message?: string }> };
+    message = payload.errors?.map((e) => e.message ?? "").join(" ").toLowerCase() ?? "";
+  } catch {
+    message = "";
+  }
+
+  if (response.status === 409 || message.includes("already")) {
+    return "already_subscribed";
+  }
+
+  throw new Error("Beehiiv subscribe failed");
+}
+
 async function defaultFetchExisting(normalizedEmail: string): Promise<ExistingSubscriber> {
   const client = getSanityWriteClient();
   if (!client) return null;
@@ -73,11 +127,30 @@ export async function subscribeToNewsletter(
       source: NewsletterSignupSource;
       existing: ExistingSubscriber;
     }) => Promise<void>;
+    subscribeViaBeehiiv?: (
+      email: string,
+      source: NewsletterSignupSource,
+    ) => Promise<BeehiivSubscribeStatus>;
   },
 ): Promise<SubscribeNewsletterResult> {
   const parsed = parseNewsletterEmail(rawEmail);
   if (!parsed) {
     return { ok: false, code: "invalid_email" };
+  }
+
+  const beehiivSubscribe = options?.subscribeViaBeehiiv ?? subscribeWithBeehiiv;
+  const useBeehiiv = options?.subscribeViaBeehiiv != null || getBeehiivConfig() != null;
+
+  if (useBeehiiv) {
+    try {
+      const status = await beehiivSubscribe(parsed.raw, source);
+      return {
+        ok: true,
+        status: status === "already_subscribed" ? "already_subscribed" : "created",
+      };
+    } catch {
+      return { ok: false, code: "storage_error" };
+    }
   }
 
   if (!options?.persist && !getSanityWriteClient()) {

@@ -30,6 +30,7 @@ export default defineConfig({
             S.divider(),
             S.documentTypeListItem("blogPost").title("Blog posts"),
             S.documentTypeListItem("newsItem").title("Book news"),
+            S.documentTypeListItem("bookReview").title("Book reviews"),
             S.documentTypeListItem("newsletterSubscriber").title("Newsletter subscribers"),
           ]),
     }),

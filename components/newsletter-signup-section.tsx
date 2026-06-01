@@ -1,5 +1,9 @@
 import { NewsletterSignupForm } from "@/components/newsletter-signup-form";
-import type { NewsletterCopy, NewsletterSignupSource } from "@/lib/newsletter";
+import {
+  NEWSLETTER_SIGNUP_VISIBLE,
+  type NewsletterCopy,
+  type NewsletterSignupSource,
+} from "@/lib/newsletter";
 
 type NewsletterSignupSectionProps = {
   copy: NewsletterCopy;
@@ -10,6 +14,8 @@ export function NewsletterSignupSection({
   copy,
   source = "home",
 }: NewsletterSignupSectionProps) {
+  if (!NEWSLETTER_SIGNUP_VISIBLE) return null;
+
   return (
     <section
       className="rounded-2xl border border-stone-200/90 bg-[#f3efe8]/60 px-6 py-10 shadow-sm sm:px-10 sm:py-12"

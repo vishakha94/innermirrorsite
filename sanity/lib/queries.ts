@@ -24,7 +24,21 @@ export const siteSettingsQuery = groq`
     featuredMediumArticleUrl,
     amazonBookPurchaseUrl,
     newsletterHeadline,
-    newsletterDescription
+    newsletterDescription,
+    bookReviewsHeadline
+  }
+`;
+
+export const bookReviewsQuery = groq`
+  *[_type == "bookReview"] | order(publishedAt desc) {
+    _id,
+    "slug": slug.current,
+    quote,
+    sourceName,
+    reviewerName,
+    rating,
+    reviewUrl,
+    publishedAt
   }
 `;
 

@@ -15,6 +15,9 @@ export type NewsletterCopy = {
 
 export const DEFAULT_NEWSLETTER_HEADLINE = "Stay in the loop" as const;
 
+/** Set to `true` to show newsletter signup on the home page and in the footer. */
+export const NEWSLETTER_SIGNUP_VISIBLE = false;
+
 export const DEFAULT_NEWSLETTER_DESCRIPTION =
   "Join the mailing list for occasional updates on the book launch, news, videos, and articles." as const;
 

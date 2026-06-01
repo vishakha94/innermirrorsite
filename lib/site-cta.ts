@@ -10,6 +10,10 @@ export const CTA_COPY = {
   sections: {
     viewAll: "View all",
     viewChannel: "View channel",
+    bookReviews: "What People Are Saying About the Book",
+  },
+  bookReviews: {
+    seeMore: "See more",
   },
   medium: {
     continueReading: "Continue reading",

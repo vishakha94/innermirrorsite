@@ -6,7 +6,7 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { newsItemsQuery } from "@/sanity/lib/queries";
 
 export const metadata: Metadata = {
-  title: "Book news",
+  title: "Book News",
 };
 
 export default async function NewsIndexPage() {
@@ -20,7 +20,7 @@ export default async function NewsIndexPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
       <h1 className="font-serif text-4xl font-semibold tracking-tight text-stone-900">
-        Book news
+        Book News
       </h1>
       <p className="mt-3 text-stone-600">
         Launch dates, pre-order links, events, and other milestones for readers.

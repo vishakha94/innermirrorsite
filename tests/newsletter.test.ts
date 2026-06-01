@@ -95,4 +95,20 @@ describe("subscribeToNewsletter", () => {
     expect(result).toEqual({ ok: true, status: "resubscribed" });
     expect(persist).toHaveBeenCalledOnce();
   });
+
+  it("uses Beehiiv when configured", async () => {
+    const result = await subscribeToNewsletter("reader@example.com", "home", {
+      subscribeViaBeehiiv: vi.fn().mockResolvedValue("created"),
+    });
+
+    expect(result).toEqual({ ok: true, status: "created" });
+  });
+
+  it("maps Beehiiv already subscribed result", async () => {
+    const result = await subscribeToNewsletter("reader@example.com", "footer", {
+      subscribeViaBeehiiv: vi.fn().mockResolvedValue("already_subscribed"),
+    });
+
+    expect(result).toEqual({ ok: true, status: "already_subscribed" });
+  });
 });

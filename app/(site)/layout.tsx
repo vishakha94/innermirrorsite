@@ -1,6 +1,6 @@
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { resolveNewsletterCopy } from "@/lib/newsletter";
+import { NEWSLETTER_SIGNUP_VISIBLE, resolveNewsletterCopy } from "@/lib/newsletter";
 import { resolveYoutubeUrl } from "@/lib/site-externals";
 import { sanityFetch } from "@/sanity/lib/client";
 import { siteSettingsQuery } from "@/sanity/lib/queries";
@@ -53,7 +53,7 @@ export default async function SiteLayout({
     linkedinUrl: resolvedSocialUrl(settings?.linkedinUrl, "NEXT_PUBLIC_SOCIAL_LINKEDIN_URL"),
   };
 
-  const newsletterCopy = resolveNewsletterCopy(settings);
+  const newsletterCopy = NEWSLETTER_SIGNUP_VISIBLE ? resolveNewsletterCopy(settings) : undefined;
 
   return (
     <div className="flex min-h-full flex-col">

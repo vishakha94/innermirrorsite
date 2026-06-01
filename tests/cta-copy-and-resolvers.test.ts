@@ -21,6 +21,8 @@ describe("CTA_COPY", () => {
     expect(CTA_COPY.exploreBookPage.innerMirrorBlog).toBe("Inner Mirror Blog");
     expect(CTA_COPY.exploreBookPage.youtubeChannel).toBe("YouTube channel");
     expect(CTA_COPY.sections.viewChannel).toBe("View channel");
+    expect(CTA_COPY.sections.bookReviews).toBe("What People Are Saying About the Book");
+    expect(CTA_COPY.bookReviews.seeMore).toBe("See more");
     expect(CTA_COPY.newsletter.submit).toBe("Join the mailing list");
     expect(CTA_COPY.exploreBookPage.footerHeadline).toBe("Ready to explore your inner world?");
     expect(CTA_COPY.studio.editContent).toBe("Edit content");

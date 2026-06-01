@@ -18,6 +18,20 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Newsletter (Beehiiv)
+
+The site newsletter form posts to `/api/newsletter/subscribe`.
+
+To connect it to Beehiiv, set these environment variables:
+
+```bash
+BEEHIIV_API_KEY=your_beehiiv_api_key
+BEEHIIV_PUBLICATION_ID=your_publication_id
+```
+
+With both set, signups are sent to Beehiiv.  
+If they are not set, the app falls back to the local/Sanity subscriber storage flow.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More

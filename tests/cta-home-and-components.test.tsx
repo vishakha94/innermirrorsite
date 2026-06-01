@@ -57,6 +57,7 @@ const sanityFetch = vi.hoisted(() =>
     if (q.includes("siteSettings")) return minimalSiteSettingsResponse();
     if (q.includes("blogPost")) return Promise.resolve([]);
     if (q.includes("newsItem")) return Promise.resolve([]);
+    if (q.includes("bookReview")) return Promise.resolve([]);
     return Promise.resolve(null);
   }),
 );
@@ -71,6 +72,7 @@ function resetSanityFetchDefault() {
     if (q.includes("siteSettings")) return minimalSiteSettingsResponse();
     if (q.includes("blogPost")) return Promise.resolve([]);
     if (q.includes("newsItem")) return Promise.resolve([]);
+    if (q.includes("bookReview")) return Promise.resolve([]);
     return Promise.resolve(null);
   });
 }
@@ -92,15 +94,26 @@ describe("Home page CTAs (Sanity mock = minimal settings → fallbacks for hero 
     expect(getCopy.getAttribute("href")).toMatch(/^https?:\/\//);
 
     expect(screen.getByRole("heading", { name: "From YouTube" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Stay in the loop" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: CTA_COPY.sections.bookReviews }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /See more: review from Deified Publications/ }),
+    ).toHaveAttribute(
+      "href",
+      "https://deifiedpublications.com/introspection-book-review-a-workbook-that-asks-hard-questions/",
+    );
+    expect(
+      screen.queryByRole("heading", { name: "Stay in the loop" }),
+    ).not.toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: CTA_COPY.sections.viewChannel }),
     ).toHaveAttribute("href", DEFAULT_YOUTUBE_SHORTS_URL);
 
     const viewAllLinks = screen.getAllByRole("link", { name: CTA_COPY.sections.viewAll });
     expect(viewAllLinks).toHaveLength(2);
-    expect(viewAllLinks[0]).toHaveAttribute("href", MEDIUM_BLOG_PROFILE_URL);
-    expect(viewAllLinks[1]).toHaveAttribute("href", "/news");
+    expect(viewAllLinks[0]).toHaveAttribute("href", "/news");
+    expect(viewAllLinks[1]).toHaveAttribute("href", MEDIUM_BLOG_PROFILE_URL);
 
     for (const video of defaultHomeYoutubeVideos()) {
       expect(screen.getByTitle(video.title)).toHaveAttribute(

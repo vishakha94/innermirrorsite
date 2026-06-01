@@ -95,7 +95,7 @@ export function SiteHeader({ siteTitle, social = {} }: NavProps) {
               Blog
             </Link>
             <Link href="/news" className="transition-colors hover:text-stone-900">
-              Book news
+              Book News
             </Link>
             {isNextDev ? (
               <Link
@@ -166,7 +166,7 @@ export function SiteHeader({ siteTitle, social = {} }: NavProps) {
                 Blog
               </Link>
               <Link href="/news" className={linkClass} onClick={close}>
-                Book news
+                Book News
               </Link>
               <SocialNavLinks urls={social} variant="mobile" onNavigate={close} />
               {isNextDev ? (

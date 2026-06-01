@@ -44,7 +44,7 @@ vi.mock("@/sanity/lib/client", () => ({
 }));
 
 describe("Medium blog links", () => {
-  it("uses the same URL for header Blog and home “From the blog” View all", async () => {
+  it("uses the same URL for header Blog and home “From the Blog” View all", async () => {
     const { container: headerRoot } = render(<SiteHeader siteTitle="Test Site" />);
     const headerBlog = headerRoot.querySelector(
       `a[href="${MEDIUM_BLOG_PROFILE_URL}"]`,
@@ -55,7 +55,7 @@ describe("Medium blog links", () => {
     const page = await HomePage();
     render(page);
 
-    const fromBlogHeading = screen.getByRole("heading", { name: "From the blog" });
+    const fromBlogHeading = screen.getByRole("heading", { name: "From the Blog" });
     const fromBlogSection = fromBlogHeading.closest("section");
     expect(fromBlogSection).not.toBeNull();
 

@@ -160,6 +160,13 @@ export const siteSettings = defineType({
       rows: 3,
       description: "Short text under the headline explaining what subscribers receive.",
     }),
+    defineField({
+      name: "bookReviewsHeadline",
+      title: "Book reviews section headline",
+      type: "string",
+      description:
+        "Heading for “What People Are Saying About the Book” on the home page. If empty, uses the default in code.",
+    }),
   ],
   preview: {
     prepare() {

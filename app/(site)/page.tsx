@@ -2,9 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BookNewsSectionBody } from "@/components/book-news-section-body";
+import { BookReviewsSection } from "@/components/book-reviews-section";
 import { HomeYoutubeSection } from "@/components/home-youtube-section";
 import { MediumPostTeaser } from "@/components/medium-post-teaser";
-import { NewsletterSignupSection } from "@/components/newsletter-signup-section";
 import { HeroInnerMirrorMark } from "@/components/hero-inner-mirror-mark";
 import { fetchMediumFeaturedFromSanity } from "@/lib/medium-post-preview";
 import {
@@ -16,11 +16,16 @@ import {
 } from "@/lib/site-cta";
 import { MEDIUM_BLOG_PROFILE_URL, resolveAmazonBookPurchaseUrl, resolveYoutubeShortsUrl } from "@/lib/site-externals";
 import { resolveHomeYoutubeVideos, type SanityHomeYoutubeVideo } from "@/lib/youtube-embed";
-import { resolveNewsletterCopy } from "@/lib/newsletter";
 import { resolveBookNewsItems, type BookNewsItem } from "@/lib/book-news";
+import {
+  resolveBookReviewItems,
+  resolveBookReviewsSectionHeadline,
+  type BookReviewItem,
+} from "@/lib/book-reviews";
 import { sanityFetch } from "@/sanity/lib/client";
 import {
   blogPostsQuery,
+  bookReviewsQuery,
   newsItemsQuery,
   siteSettingsQuery,
 } from "@/sanity/lib/queries";
@@ -36,8 +41,7 @@ type SiteSettings = {
   amazonBookPurchaseUrl?: string | null;
   youtubeShortsUrl?: string | null;
   homeYoutubeVideos?: SanityHomeYoutubeVideo[] | null;
-  newsletterHeadline?: string | null;
-  newsletterDescription?: string | null;
+  bookReviewsHeadline?: string | null;
 } | null;
 
 type PostCard = {
@@ -49,10 +53,11 @@ type PostCard = {
 };
 
 export default async function HomePage() {
-  const [settings, posts, news] = await Promise.all([
+  const [settings, posts, news, reviewsFromSanity] = await Promise.all([
     sanityFetch<SiteSettings>({ query: siteSettingsQuery, revalidate: 60 }),
     sanityFetch<PostCard[]>({ query: blogPostsQuery, revalidate: 60 }),
     sanityFetch<BookNewsItem[]>({ query: newsItemsQuery, revalidate: 60 }),
+    sanityFetch<BookReviewItem[]>({ query: bookReviewsQuery, revalidate: 60 }),
   ]);
   const bookNews = resolveBookNewsItems(news);
   const mediumFeatured = await fetchMediumFeaturedFromSanity(
@@ -68,7 +73,8 @@ export default async function HomePage() {
   const bookPurchaseUrl = resolveAmazonBookPurchaseUrl(settings?.amazonBookPurchaseUrl);
   const youtubeShortsUrl = resolveYoutubeShortsUrl(settings?.youtubeShortsUrl);
   const homeYoutubeVideos = resolveHomeYoutubeVideos(settings?.homeYoutubeVideos);
-  const newsletterCopy = resolveNewsletterCopy(settings);
+  const bookReviews = resolveBookReviewItems(reviewsFromSanity);
+  const bookReviewsHeadline = resolveBookReviewsSectionHeadline(settings?.bookReviewsHeadline);
 
   return (
     <main>
@@ -132,9 +138,21 @@ export default async function HomePage() {
       <div className="mx-auto max-w-6xl space-y-20 px-4 py-16 sm:px-6">
         <HomeYoutubeSection viewChannelUrl={youtubeShortsUrl} videos={homeYoutubeVideos} />
 
+        <BookReviewsSection headline={bookReviewsHeadline} reviews={bookReviews} />
+
         <section>
           <div className="mb-8 flex items-end justify-between gap-4">
-            <h2 className="font-serif text-2xl font-semibold text-stone-900">From the blog</h2>
+            <h2 className="font-serif text-2xl font-semibold text-stone-900 sm:text-3xl">Book News</h2>
+            <Link href="/news" className="text-sm font-medium text-amber-900 hover:underline">
+              {CTA_COPY.sections.viewAll}
+            </Link>
+          </div>
+          <BookNewsSectionBody items={bookNews} maxItems={4} />
+        </section>
+
+        <section>
+          <div className="mb-8 flex items-end justify-between gap-4">
+            <h2 className="font-serif text-2xl font-semibold text-stone-900 sm:text-3xl">From the Blog</h2>
             <Link
               href={MEDIUM_BLOG_PROFILE_URL}
               target="_blank"
@@ -183,18 +201,6 @@ export default async function HomePage() {
             />
           ) : null}
         </section>
-
-        <section>
-          <div className="mb-8 flex items-end justify-between gap-4">
-            <h2 className="font-serif text-2xl font-semibold text-stone-900">Book news</h2>
-            <Link href="/news" className="text-sm font-medium text-amber-900 hover:underline">
-              {CTA_COPY.sections.viewAll}
-            </Link>
-          </div>
-          <BookNewsSectionBody items={bookNews} maxItems={4} />
-        </section>
-
-        <NewsletterSignupSection copy={newsletterCopy} source="home" />
       </div>
     </main>
   );
